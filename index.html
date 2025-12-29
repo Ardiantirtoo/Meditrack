@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MediTrack - Final System</title>
+    <title>MediTrack - Final Sempurna</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -155,6 +155,17 @@
                     Platform Kesehatan Terintegrasi
                 </p>
                 <div class="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin mb-12"></div>
+                
+                <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 w-full shadow-soft border border-white/20 animate-slide-up">
+                    <h3 class="text-xs font-bold text-primary-200 uppercase tracking-widest mb-3">Tim Pengembang</h3>
+                    <ul class="text-[10px] text-white space-y-1.5 text-left font-medium">
+                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-secondary-500"></div> Siti Fahdia Rahmatullah A. (2100023196)</li>
+                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-secondary-500"></div> Adhwa Rizqy Hanifah (2200023196)</li>
+                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-secondary-500"></div> Rahma Amelia Izzaty (2200023197)</li>
+                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-secondary-500"></div> Sitta Istiqomah Said (2200023199)</li>
+                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-secondary-500"></div> Ridha Rahmatul Azizah (2200023201)</li>
+                    </ul>
+                </div>
             </div>
         </div>
 
@@ -197,6 +208,10 @@
                     <div><label class="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">NIK</label><input type="number" class="w-full mt-2 p-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-primary-500 focus:ring-4 focus:ring-primary-100 outline-none font-semibold text-gray-800 transition-all"></div>
                     <button type="submit" class="w-full py-4 rounded-2xl bg-primary-700 text-white font-bold shadow-lg shadow-primary-500/30 active:scale-95 transition-transform mt-6">Masuk Sekarang</button>
                 </form>
+                
+                <div class="mt-auto pb-8 text-center">
+                     <p class="text-[10px] text-gray-400">Developed by <span class="font-bold text-primary-600">MediTrack Team</span></p>
+                </div>
             </div>
         </div>
 
@@ -204,16 +219,21 @@
         <div id="screen-login-nakes" class="screen bg-white">
             <div class="px-8 pt-16 flex flex-col h-full relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-40 h-40 bg-nakes-100 rounded-bl-full -mr-10 -mt-10 opacity-50 z-0"></div>
-                <div class="relative z-10">
-                    <button onclick="goToScreen('screen-role')" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center mb-8 hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button>
-                    <span class="px-3 py-1 rounded-full bg-nakes-50 text-nakes-700 text-[10px] font-bold tracking-widest border border-nakes-100 mb-4 inline-block">APOTEKER ACCESS</span>
-                    <h2 class="text-3xl font-serif font-bold text-gray-900 mb-2">Portal Apoteker</h2>
-                    <p class="text-gray-500 mb-8 text-sm">Masuk untuk memantau terapi pasien.</p>
-                    <form onsubmit="handleLoginNakes(event)" class="space-y-5">
-                        <div><label class="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">No. SIPA / STRA</label><input type="text" value="19900101/SIPA/2024" class="w-full mt-2 p-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-nakes-500 focus:ring-4 focus:ring-nakes-100 outline-none font-semibold text-gray-800 transition-all font-mono"></div>
-                        <div><label class="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">PIN Akses</label><input type="password" value="123456" class="w-full mt-2 p-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-nakes-500 focus:ring-4 focus:ring-nakes-100 outline-none font-semibold text-gray-800 transition-all"></div>
-                        <button type="submit" class="w-full py-4 rounded-2xl bg-nakes-700 text-white font-bold shadow-lg shadow-nakes-500/30 active:scale-95 transition-transform mt-6 flex justify-center gap-2 items-center"><span>Masuk Dashboard</span><i class="ph-bold ph-arrow-right"></i></button>
-                    </form>
+                <div class="relative z-10 flex flex-col h-full">
+                    <div>
+                        <button onclick="goToScreen('screen-role')" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center mb-8 hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button>
+                        <span class="px-3 py-1 rounded-full bg-nakes-50 text-nakes-700 text-[10px] font-bold tracking-widest border border-nakes-100 mb-4 inline-block">APOTEKER ACCESS</span>
+                        <h2 class="text-3xl font-serif font-bold text-gray-900 mb-2">Portal Apoteker</h2>
+                        <p class="text-gray-500 mb-8 text-sm">Masuk untuk memantau terapi pasien.</p>
+                        <form onsubmit="handleLoginNakes(event)" class="space-y-5">
+                            <div><label class="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">No. SIPA / STRA</label><input type="text" value="19900101/SIPA/2024" class="w-full mt-2 p-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-nakes-500 focus:ring-4 focus:ring-nakes-100 outline-none font-semibold text-gray-800 transition-all font-mono"></div>
+                            <div><label class="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">PIN Akses</label><input type="password" value="123456" class="w-full mt-2 p-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-nakes-500 focus:ring-4 focus:ring-nakes-100 outline-none font-semibold text-gray-800 transition-all"></div>
+                            <button type="submit" class="w-full py-4 rounded-2xl bg-nakes-700 text-white font-bold shadow-lg shadow-nakes-500/30 active:scale-95 transition-transform mt-6 flex justify-center gap-2 items-center"><span>Masuk Dashboard</span><i class="ph-bold ph-arrow-right"></i></button>
+                        </form>
+                    </div>
+                    <div class="mt-auto pb-8 text-center">
+                         <p class="text-[10px] text-gray-400">Developed by <span class="font-bold text-nakes-600">MediTrack Team</span></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -570,7 +590,44 @@
             </div>
         </div>
 
-        <!-- MODAL ID CARD NAKES (NEW) -->
+        <!-- MODAL TAMBAH FORUM KASUS (NEW: WITH PATIENT SELECT) -->
+        <div id="modal-add-forum" class="fixed inset-0 z-[60] bg-black/80 hidden items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
+            <div class="bg-white w-full max-w-sm rounded-3xl p-6 relative animate-slide-up">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-gray-900">Buat Diskusi Baru</h3>
+                    <button onclick="document.getElementById('modal-add-forum').classList.add('hidden')" class="text-gray-400 hover:text-gray-600"><i class="ph-bold ph-x text-xl"></i></button>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase">Pilih Pasien Terkait</label>
+                        <select id="new-forum-patient" class="w-full mt-1 p-3 bg-gray-50 rounded-xl text-sm border border-gray-200 outline-none">
+                            <!-- Populated via JS -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase">Judul Kasus</label>
+                        <input type="text" id="new-forum-title" class="w-full mt-1 p-3 bg-gray-50 rounded-xl text-sm border border-gray-200 outline-none" placeholder="Judul singkat...">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase">Tag Kategori</label>
+                        <select id="new-forum-tag" class="w-full mt-1 p-3 bg-gray-50 rounded-xl text-sm border border-gray-200 outline-none">
+                            <option value="GERIATRI">Geriatri</option>
+                            <option value="PEDIATRI">Pediatri</option>
+                            <option value="URGENT">Urgent</option>
+                            <option value="INTERAKSI">Interaksi Obat</option>
+                            <option value="UMUM">Umum</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase">Deskripsi Kasus</label>
+                        <textarea id="new-forum-desc" class="w-full mt-1 p-3 bg-gray-50 rounded-xl text-sm border border-gray-200 h-24 outline-none resize-none" placeholder="Jelaskan detail kasus pasien..."></textarea>
+                    </div>
+                    <button onclick="saveForumPost()" class="w-full py-3 bg-nakes-600 text-white rounded-xl font-bold hover:bg-nakes-700 transition-colors">Posting Diskusi</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL ID CARD NAKES -->
         <div id="modal-nakes-id-card" class="fixed inset-0 z-[60] bg-black/80 hidden items-center justify-center p-6 backdrop-blur-sm flex-col animate-fade-in" onclick="this.classList.add('hidden')">
             <div class="bg-white w-full max-w-xs rounded-3xl overflow-hidden shadow-2xl relative" onclick="event.stopPropagation()">
                 <!-- ID Card Header -->
@@ -655,7 +712,7 @@
                     <button onclick="goToScreen('screen-home-nakes')" class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button>
                     <h2 class="font-bold text-gray-900">Forum Kasus</h2>
                 </div>
-                <button class="w-10 h-10 bg-nakes-600 rounded-full text-white flex items-center justify-center shadow-lg"><i class="ph-bold ph-plus"></i></button>
+                <button onclick="openAddForumModal()" class="w-10 h-10 bg-nakes-600 rounded-full text-white flex items-center justify-center shadow-lg hover:bg-nakes-700 transition-colors"><i class="ph-bold ph-plus"></i></button>
             </div>
             
             <div class="scroll-content px-6 pt-6 pb-24" id="forum-list-container">
@@ -719,17 +776,24 @@
                 </div>
 
                 <div class="space-y-3 text-left">
-                    <button class="w-full bg-white p-4 rounded-2xl flex items-center justify-between shadow-sm border border-gray-100 hover:border-nakes-500 group transition-all">
+                    <button onclick="goToScreen('screen-nakes-edit-profile')" class="w-full bg-white p-4 rounded-2xl flex items-center justify-between shadow-sm border border-gray-100 hover:border-nakes-500 group transition-all">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-600 flex items-center justify-center group-hover:bg-nakes-50 group-hover:text-nakes-600 transition-colors"><i class="ph-fill ph-user-gear"></i></div>
                             <span class="text-sm font-bold text-gray-700">Edit Profil Profesional</span>
                         </div>
                         <i class="ph-bold ph-caret-right text-gray-300"></i>
                     </button>
-                    <button class="w-full bg-white p-4 rounded-2xl flex items-center justify-between shadow-sm border border-gray-100 hover:border-nakes-500 group transition-all">
+                    <button onclick="goToScreen('screen-nakes-settings-notif')" class="w-full bg-white p-4 rounded-2xl flex items-center justify-between shadow-sm border border-gray-100 hover:border-nakes-500 group transition-all">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-600 flex items-center justify-center group-hover:bg-nakes-50 group-hover:text-nakes-600 transition-colors"><i class="ph-fill ph-bell"></i></div>
                             <span class="text-sm font-bold text-gray-700">Pengaturan Notifikasi</span>
+                        </div>
+                        <i class="ph-bold ph-caret-right text-gray-300"></i>
+                    </button>
+                    <button onclick="goToScreen('screen-nakes-security')" class="w-full bg-white p-4 rounded-2xl flex items-center justify-between shadow-sm border border-gray-100 hover:border-nakes-500 group transition-all">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-600 flex items-center justify-center group-hover:bg-nakes-50 group-hover:text-nakes-600 transition-colors"><i class="ph-fill ph-shield-check"></i></div>
+                            <span class="text-sm font-bold text-gray-700">Keamanan Akun & PIN</span>
                         </div>
                         <i class="ph-bold ph-caret-right text-gray-300"></i>
                     </button>
@@ -737,6 +801,103 @@
                     <button onclick="goToScreen('screen-role')" class="w-full mt-6 p-4 bg-rose-50 text-rose-600 font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-rose-100 transition-colors border border-rose-100">
                         <i class="ph-bold ph-sign-out"></i> Keluar Akun
                     </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. NAKES: EDIT PROFIL -->
+        <div id="screen-nakes-edit-profile" class="screen bg-gray-50">
+            <div class="glass-header px-6 pt-14 pb-4 flex items-center gap-4 sticky top-0 z-20">
+                <button onclick="goToScreen('screen-nakes-profil')" class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button>
+                <h2 class="font-bold text-gray-900 mt-1">Edit Profil</h2>
+            </div>
+            <div class="scroll-content px-6 pt-6">
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 space-y-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Nama Lengkap</label>
+                        <input type="text" value="Apt. Tirto, S.Farm" class="w-full mt-2 p-4 rounded-xl bg-gray-50 border border-transparent focus:bg-white focus:border-nakes-500 outline-none text-sm font-bold">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Nomor SIPA</label>
+                        <input type="text" value="1990.01.2024" class="w-full mt-2 p-4 rounded-xl bg-gray-50 border border-transparent focus:bg-white focus:border-nakes-500 outline-none text-sm font-bold font-mono">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Unit Kerja</label>
+                        <input type="text" value="RS Hermina" class="w-full mt-2 p-4 rounded-xl bg-gray-50 border border-transparent focus:bg-white focus:border-nakes-500 outline-none text-sm font-bold">
+                    </div>
+                     <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Email</label>
+                        <input type="email" value="tirto.apt@hermina.com" class="w-full mt-2 p-4 rounded-xl bg-gray-50 border border-transparent focus:bg-white focus:border-nakes-500 outline-none text-sm font-bold">
+                    </div>
+                    <button onclick="alert('Profil berhasil diperbarui!'); goToScreen('screen-nakes-profil')" class="w-full py-4 bg-nakes-600 text-white rounded-xl font-bold shadow-lg hover:bg-nakes-700 transition-all mt-4">Simpan Perubahan</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 9. NAKES: PENGATURAN NOTIFIKASI -->
+        <div id="screen-nakes-settings-notif" class="screen bg-gray-50">
+            <div class="glass-header px-6 pt-14 pb-4 flex items-center gap-4 sticky top-0 z-20">
+                <button onclick="goToScreen('screen-nakes-profil')" class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button>
+                <h2 class="font-bold text-gray-900 mt-1">Notifikasi</h2>
+            </div>
+            <div class="scroll-content px-6 pt-6">
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 space-y-6">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-900">Alert Pasien Berisiko</h4>
+                            <p class="text-[10px] text-gray-500">Notifikasi jika ada interaksi obat berbahaya.</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" checked class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-nakes-500"></div>
+                        </label>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-900">Diskusi Forum</h4>
+                            <p class="text-[10px] text-gray-500">Notifikasi balasan komentar sejawat.</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" checked class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-nakes-500"></div>
+                        </label>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-900">Jadwal Minum Obat</h4>
+                            <p class="text-[10px] text-gray-500">Notifikasi pasien yang melewatkan dosis.</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-nakes-500"></div>
+                        </label>
+                    </div>
+                    <button onclick="alert('Pengaturan disimpan!'); goToScreen('screen-nakes-profil')" class="w-full py-4 bg-nakes-600 text-white rounded-xl font-bold shadow-lg hover:bg-nakes-700 transition-all mt-4">Simpan</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 10. NAKES: KEAMANAN -->
+        <div id="screen-nakes-security" class="screen bg-gray-50">
+            <div class="glass-header px-6 pt-14 pb-4 flex items-center gap-4 sticky top-0 z-20">
+                <button onclick="goToScreen('screen-nakes-profil')" class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button>
+                <h2 class="font-bold text-gray-900 mt-1">Keamanan Akun</h2>
+            </div>
+            <div class="scroll-content px-6 pt-6">
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 space-y-4">
+                     <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">PIN Lama</label>
+                        <input type="password" placeholder="******" class="w-full mt-2 p-4 rounded-xl bg-gray-50 border border-transparent focus:bg-white focus:border-nakes-500 outline-none text-sm font-bold tracking-widest">
+                    </div>
+                     <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">PIN Baru</label>
+                        <input type="password" placeholder="******" class="w-full mt-2 p-4 rounded-xl bg-gray-50 border border-transparent focus:bg-white focus:border-nakes-500 outline-none text-sm font-bold tracking-widest">
+                    </div>
+                     <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Konfirmasi PIN Baru</label>
+                        <input type="password" placeholder="******" class="w-full mt-2 p-4 rounded-xl bg-gray-50 border border-transparent focus:bg-white focus:border-nakes-500 outline-none text-sm font-bold tracking-widest">
+                    </div>
+                    <button onclick="alert('PIN berhasil diubah!'); goToScreen('screen-nakes-profil')" class="w-full py-4 bg-nakes-600 text-white rounded-xl font-bold shadow-lg hover:bg-nakes-700 transition-all mt-4">Ubah PIN</button>
                 </div>
             </div>
         </div>
@@ -1440,9 +1601,14 @@
             document.getElementById('modal-guideline').classList.add('flex');
         }
 
+        // === FORUM LOGIC ===
         function renderForumList() {
             const container = document.getElementById('forum-list-container');
             container.innerHTML = '';
+            
+            // Add Create Post logic if needed? Already handled by + button.
+            // Just rendering the list here.
+            
             forumData.forEach(f => {
                 const html = `
                 <div onclick="openForumDetail('${f.id}')" class="bg-white p-5 rounded-3xl shadow-sm border border-gray-200 hover:shadow-md transition-all cursor-pointer mb-4">
@@ -1471,13 +1637,70 @@
             });
         }
 
+        // New functions for creating forum post
+        function openAddForumModal() {
+            populateForumPatientSelect();
+            document.getElementById('modal-add-forum').classList.remove('hidden');
+            document.getElementById('modal-add-forum').classList.add('flex');
+        }
+
+        function populateForumPatientSelect() {
+            const select = document.getElementById('new-forum-patient');
+            select.innerHTML = '<option value="" disabled selected>Pilih Pasien...</option>';
+            Object.values(patientsData).forEach(p => {
+                const option = document.createElement('option');
+                option.value = p.id;
+                option.text = `${p.name} (${p.id})`;
+                select.appendChild(option);
+            });
+        }
+
+        function saveForumPost() {
+            const title = document.getElementById('new-forum-title').value;
+            const desc = document.getElementById('new-forum-desc').value;
+            const tag = document.getElementById('new-forum-tag').value;
+            const patientId = document.getElementById('new-forum-patient').value;
+            
+            if (title && desc && patientId) {
+                const patient = patientsData[patientId];
+                const newPost = {
+                    id: 'F' + (forumData.length + 1).toString().padStart(3, '0'),
+                    author: 'Apt. Tirto, S.Farm',
+                    role: 'Apoteker',
+                    roleClass: 'bg-green-100 text-green-700',
+                    tag: tag,
+                    tagClass: 'bg-blue-100 text-blue-600', // simple logic for tag color
+                    title: title,
+                    content: desc,
+                    patientId: patientId, 
+                    patientName: patient.name,
+                    likes: 0,
+                    comments: []
+                };
+                
+                forumData.unshift(newPost); // Add to beginning
+                renderForumList();
+                document.getElementById('modal-add-forum').classList.add('hidden');
+                
+                // Clear inputs
+                document.getElementById('new-forum-title').value = '';
+                document.getElementById('new-forum-desc').value = '';
+                document.getElementById('new-forum-patient').value = '';
+
+                
+                alert('Diskusi baru berhasil diposting!');
+            } else {
+                alert('Mohon lengkapi judul, deskripsi, dan pilih pasien.');
+            }
+        }
+
         function openForumDetail(id) {
             currentForumId = id;
             const post = forumData.find(f => f.id === id);
             document.getElementById('forum-detail-content').innerHTML = `
                 <div class="flex items-center gap-3 mb-4">
                     <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 font-bold text-sm border border-gray-200">${post.author.substring(0,2)}</div>
-                    <div><h4 class="font-bold text-sm text-gray-900">${post.author}</h4><p class="text-[10px] text-gray-500">${post.role} • 2j lalu</p></div>
+                    <div><h4 class="font-bold text-sm text-gray-900">${post.author}</h4><p class="text-[10px] text-gray-500">${post.role} • Baru saja</p></div>
                 </div>
                 <h2 class="text-lg font-bold text-gray-900 mb-3">${post.title}</h2>
                 <p class="text-sm text-gray-600 leading-relaxed mb-6 text-justify">${post.content}</p>
