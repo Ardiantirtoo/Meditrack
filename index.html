@@ -1106,35 +1106,31 @@
         // MOCK DATA PASIEN LENGKAP (FOR NAKES)
         const patientsData = {
             'P001': {
-                id: 'P001', name: 'Fritty', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200',
-                age: '24 Th', body: '55kg / 160cm', allergy: 'Udang', diagnosis: 'TB Paru', since: '2 Bulan',
-                compliance: 85,
+                id: 'P001', name: 'Fritty', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200',
+                age: '24 Th', body: '55kg / 160cm', allergy: 'Udang', diagnosis: 'Migrain Vestibular', since: '1 Minggu',
+                compliance: 90,
                 history: [
-                    { date: '20 Des 2024', title: 'Kontrol Rutin', desc: 'Perbaikan batuk, BB naik 1kg.' },
-                    { date: '10 Nov 2024', title: 'Awal Diagnosa', desc: 'Batuk > 2 minggu, BTA (+).' }
+                    { date: '28 Des 2024', title: 'Kontrol Keluhan', desc: 'Pusing berputar berkurang.' },
+                    { date: '20 Des 2024', title: 'Serangan Akut', desc: 'Vertigo berat disertai mual.' }
                 ],
                 sideEffects: [
-                    { type: 'Ringan', desc: 'Mual ringan setelah minum Rifampicin', date: 'Kemarin', solved: true },
-                    { type: 'Info', desc: 'Urin berwarna merah (normal efek obat)', date: 'Hari ini', solved: true }
+                    { type: 'Ringan', desc: 'Mengantuk setelah minum obat', date: 'Kemarin', solved: true }
                 ],
                 meds: [
-                    { name: 'Rifampicin 450mg', dose: '1x1 Pagi', status: 'Rutin' },
-                    { name: 'Isoniazid 300mg', dose: '1x1 Malam', status: 'Rutin' },
-                    { name: 'Vit B6 10mg', dose: '1x1 Pagi', status: 'Suplemen' }
+                    { name: 'Betahistine 6mg', dose: '3x1 Sesudah makan', status: 'Rutin' },
+                    { name: 'Flunarizine 5mg', dose: '1x1 Malam', status: 'Rutin' },
+                    { name: 'Paracetamol 500mg', dose: 'PRN (Nyeri)', status: 'Jika Perlu' }
                 ],
                 rxData: [
-                    { drug: 'Rifampicin 450mg', qty: 'No. XXX', signa: 'S 1 dd 1 (Pagi)' },
-                    { drug: 'Isoniazid 300mg', qty: 'No. XXX', signa: 'S 1 dd 1 (Malam)' },
-                    { drug: 'Vit B6 10mg', qty: 'No. XXX', signa: 'S 1 dd 1' }
+                    { drug: 'Betahistine Mesylate 6mg', qty: 'No. XX', signa: 'S 3 dd 1' },
+                    { drug: 'Flunarizine 5mg', qty: 'No. X', signa: 'S 1 dd 1 (Malam)' }
                 ],
-                missed: [
-                    { drug: 'Rifampicin', date: 'Kemarin, 08:00', note: 'Lupa bawa obat saat kerja' }
-                ],
-                chartData: [100, 100, 80, 100, 60, 100, 100],
-                interaction: 'Tidak ada interaksi serius.'
+                missed: [],
+                chartData: [100, 100, 100, 100, 100, 50, 100],
+                interaction: 'Aman.'
             },
             'P002': {
-                id: 'P002', name: 'Tn. Budi', img: 'https://images.unsplash.com/photo-1566492031773-4fbc7dddf5af?w=200',
+                id: 'P002', name: 'Tn. Budi', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200',
                 age: '58 Th', body: '78kg / 172cm', allergy: 'Penicillin', diagnosis: 'Hipertensi + Asma', since: '3 Tahun',
                 compliance: 60,
                 history: [
@@ -1200,6 +1196,109 @@
                 missed: [],
                 chartData: [100, 100, 100, 0, 0, 0, 0],
                 interaction: 'Aman.'
+            },
+            'P005': { 
+                id: 'P005', name: 'Tn. Ruslan', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200',
+                age: '45 Th', body: '50kg / 168cm', allergy: 'Tidak Ada', diagnosis: 'TB Paru (Intensif)', since: '1 Bulan',
+                compliance: 85,
+                history: [
+                    { date: '15 Des 2024', title: 'Cek Dahak', desc: 'BTA positif (+1).' }
+                ],
+                sideEffects: [
+                    { type: 'Info', desc: 'Urin merah (Efek Rifampicin)', date: 'Hari ini', solved: true }
+                ],
+                meds: [
+                    { name: 'FDC (4 Tablet)', dose: '1x1 Pagi (Perut Kosong)', status: 'Rutin' },
+                    { name: 'Vit B6', dose: '1x1', status: 'Suplemen' }
+                ],
+                rxData: [ { drug: 'OAT FDC Kategori 1', qty: 'No. XXVIII', signa: 'S 1 dd 4 tab' } ],
+                missed: [{ drug: 'FDC', date: 'Kemarin', note: 'Lupa' }],
+                chartData: [100, 100, 0, 100, 100, 100, 100],
+                interaction: 'Perhatikan fungsi hati.'
+            },
+            'P006': {
+                id: 'P006', name: 'Ny. Dewi', img: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=200',
+                age: '50 Th', body: '70kg / 160cm', allergy: 'Sulfa', diagnosis: 'Diabetes Mellitus Tipe 2', since: '5 Tahun',
+                compliance: 92,
+                history: [{ date: '10 Jan 2025', title: 'Cek Gula Darah', desc: 'GDP 130 mg/dL' }],
+                sideEffects: [],
+                meds: [{ name: 'Metformin 500mg', dose: '3x1 Sesudah makan', status: 'Rutin' }],
+                rxData: [{ drug: 'Metformin 500mg', qty: 'No. XC', signa: 'S 3 dd 1' }],
+                missed: [],
+                chartData: [100, 100, 100, 100, 100, 100, 100],
+                interaction: 'Aman.'
+            },
+            'P007': {
+                id: 'P007', name: 'Tn. Asep', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200',
+                age: '60 Th', body: '75kg / 170cm', allergy: 'Tidak Ada', diagnosis: 'Gout Arthritis', since: '2 Tahun',
+                compliance: 80,
+                history: [{ date: '05 Jan 2025', title: 'Nyeri Sendi', desc: 'Bengkak di jempol kaki kanan.' }],
+                sideEffects: [],
+                meds: [{ name: 'Allopurinol 100mg', dose: '1x1 Pagi', status: 'Rutin' }],
+                rxData: [{ drug: 'Allopurinol 100mg', qty: 'No. XXX', signa: 'S 1 dd 1' }],
+                missed: [{ drug: 'Allopurinol', date: 'Kemarin', note: 'Lupa' }],
+                chartData: [100, 0, 100, 100, 100, 100, 100],
+                interaction: 'Aman.'
+            },
+            'P008': {
+                id: 'P008', name: 'Nn. Clara', img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200',
+                age: '22 Th', body: '48kg / 165cm', allergy: 'Tidak Ada', diagnosis: 'Anemia Defisiensi Besi', since: '3 Bulan',
+                compliance: 88,
+                history: [{ date: '12 Jan 2025', title: 'Cek Hb', desc: 'Hb 10.5 g/dL' }],
+                sideEffects: [{ type: 'Ringan', desc: 'Mual', date: 'Hari ini', solved: true }],
+                meds: [{ name: 'Ferrous Sulfate', dose: '1x1 Malam', status: 'Rutin' }],
+                rxData: [{ drug: 'Ferrous Sulfate', qty: 'No. XXX', signa: 'S 1 dd 1' }],
+                missed: [],
+                chartData: [100, 100, 100, 100, 100, 100, 100],
+                interaction: 'Hindari minum teh/kopi bersamaan.'
+            },
+            'P009': {
+                id: 'P009', name: 'An. Dito', img: 'https://images.unsplash.com/photo-1503919545889-aef6d7a51c42?auto=format&fit=crop&q=80&w=200',
+                age: '5 Th', body: '18kg / 110cm', allergy: 'Tidak Ada', diagnosis: 'Diare Akut', since: '2 Hari',
+                compliance: 100,
+                history: [{ date: '14 Jan 2025', title: 'BAB Cair', desc: 'Frekuensi 4x sehari.' }],
+                sideEffects: [],
+                meds: [{ name: 'Zinc Sirup', dose: '1x1 Cth', status: 'Rutin' }, { name: 'Oralit', dose: 'Ad Lib', status: 'Perlu' }],
+                rxData: [{ drug: 'Zinc Sulfate Syr', qty: 'Fls No. I', signa: 'S 1 dd 1 Cth' }],
+                missed: [],
+                chartData: [100, 100, 0, 0, 0, 0, 0],
+                interaction: 'Aman.'
+            },
+            'P010': {
+                id: 'P010', name: 'Tn. Eko', img: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&q=80&w=200',
+                age: '55 Th', body: '80kg / 175cm', allergy: 'Tidak Ada', diagnosis: 'Dislipidemia', since: '4 Tahun',
+                compliance: 75,
+                history: [{ date: '20 Des 2024', title: 'Cek Kolesterol', desc: 'Total 240 mg/dL' }],
+                sideEffects: [{ type: 'Ringan', desc: 'Nyeri otot', date: 'Minggu lalu', solved: false }],
+                meds: [{ name: 'Simvastatin 20mg', dose: '1x1 Malam', status: 'Rutin' }],
+                rxData: [{ drug: 'Simvastatin 20mg', qty: 'No. XXX', signa: 'S 1 dd 1 (Malam)' }],
+                missed: [{ drug: 'Simvastatin', date: 'Kemarin', note: 'Habis' }],
+                chartData: [100, 100, 0, 0, 100, 100, 100],
+                interaction: 'Pantau nyeri otot.'
+            },
+            'P011': {
+                id: 'P011', name: 'Ny. Wati', img: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=200',
+                age: '65 Th', body: '60kg / 155cm', allergy: 'Tidak Ada', diagnosis: 'Osteoporosis', since: '2 Tahun',
+                compliance: 98,
+                history: [{ date: '01 Jan 2025', title: 'Kontrol Tulang', desc: 'Nyeri punggung berkurang.' }],
+                sideEffects: [],
+                meds: [{ name: 'Calcium + Vit D', dose: '1x1 Pagi', status: 'Suplemen' }],
+                rxData: [{ drug: 'Calc + Vit D', qty: 'No. XXX', signa: 'S 1 dd 1' }],
+                missed: [],
+                chartData: [100, 100, 100, 100, 100, 100, 100],
+                interaction: 'Aman.'
+            },
+            'P012': {
+                id: 'P012', name: 'Tn. Dedi', img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=200',
+                age: '35 Th', body: '72kg / 178cm', allergy: 'Tidak Ada', diagnosis: 'GERD', since: '6 Bulan',
+                compliance: 85,
+                history: [{ date: '10 Jan 2025', title: 'Heartburn', desc: 'Kambuh setelah makan pedas.' }],
+                sideEffects: [],
+                meds: [{ name: 'Omeprazole 20mg', dose: '1x1 Pagi (AC)', status: 'Rutin' }],
+                rxData: [{ drug: 'Omeprazole 20mg', qty: 'No. XIV', signa: 'S 1 dd 1 (ac)' }],
+                missed: [{ drug: 'Omeprazole', date: 'Pagi ini', note: 'Terlambat bangun' }],
+                chartData: [100, 100, 100, 100, 0, 100, 100],
+                interaction: 'Minum sebelum makan.'
             }
         };
 
