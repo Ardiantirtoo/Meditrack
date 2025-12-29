@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MediTrack - Final Sempurna</title>
+    <title>MediTrack - Final System</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,7 +15,7 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Courier+Prime:wght@400;700&family=Libre+Barcode+39+Text&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
@@ -23,11 +23,14 @@
                 extend: {
                     fontFamily: { 
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif'],
+                        serif: ['Lora', 'serif'],
+                        mono: ['Courier Prime', 'monospace'],
+                        barcode: ['"Libre Barcode 39 Text"', 'cursive']
                     },
                     colors: {
                         primary: { 50:'#f0fdfa', 100:'#ccfbf1', 200:'#99f6e4', 300:'#5eead4', 400:'#2dd4bf', 500:'#14b8a6', 600:'#0d9488', 700:'#0f766e', 800:'#115e59', 900:'#134e4a' },
-                        secondary: { 50:'#fffbeb', 100:'#fef3c7', 500:'#f59e0b', 600:'#d97706' }, // Gold/Amber accents
+                        secondary: { 50:'#fffbeb', 100:'#fef3c7', 500:'#f59e0b', 600:'#d97706' }, 
+                        nakes: { 50: '#f0f9ff', 100: '#e0f2fe', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1', 900: '#0c4a6e' },
                         dark: '#1e293b'
                     },
                     boxShadow: { 
@@ -62,7 +65,6 @@
             background-color: #FAFAFA; overflow: hidden;
             display: flex; flex-direction: column; z-index: 10;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-            padding-top: 10px; /* Tambahan margin atas agar tidak terpotong */
         }
 
         @media (min-width: 640px) {
@@ -71,7 +73,7 @@
         }
 
         /* SCREENS */
-        .screen { display: none; flex-direction: column; width: 100%; height: 100%; background-color: #FAFAFA; position: absolute; inset: 0; overflow: hidden; padding-top: env(safe-area-inset-top); }
+        .screen { display: none; flex-direction: column; width: 100%; height: 100%; background-color: #FAFAFA; position: absolute; inset: 0; overflow: hidden; }
         .screen.active { display: flex; animation: fadeIn 0.4s ease-out; }
 
         .scroll-content { flex: 1; overflow-y: auto; padding-bottom: 120px; scrollbar-width: none; }
@@ -82,7 +84,6 @@
             background: rgba(255, 255, 255, 0.9); 
             backdrop-filter: blur(12px); 
             border-bottom: 1px solid rgba(0,0,0,0.03); 
-            padding-top: max(20px, env(safe-area-inset-top)); /* Ensure header clears notch/top */
         }
         
         .menu-card {
@@ -95,58 +96,65 @@
         .menu-card:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
 
         .nav-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 100%; color: #94a3b8; transition: color 0.3s; }
-        .nav-btn.active { color: #0f766e; }
-        .nav-btn.active i { font-weight: bold; }
+        .nav-btn.active { color: #0f766e; } /* Pasien Color */
+        .nav-btn.active-nakes { color: #0284c7; } /* Nakes Color */
+        .nav-btn.active i, .nav-btn.active-nakes i { font-weight: bold; }
 
         .timeline-line { position: absolute; left: 23px; top: 0; bottom: 0; width: 2px; background: #e2e8f0; z-index: 0; }
-        
-        .poli-item { border: 1px solid #e2e8f0; transition: all 0.2s; cursor: pointer; }
-        .poli-item:hover { border-color: #0f766e; background-color: #f0fdfa; }
-        .poli-item.selected { border-color: #0f766e; background-color: #f0fdfa; ring: 1px solid #0f766e; }
+        .step-line::before { content: ''; position: absolute; left: 15px; top: 30px; bottom: -20px; width: 2px; background: #e2e8f0; z-index: 0; }
+        .last-step::before { display: none; }
 
-        /* Image Handling */
-        .img-cover { width: 100%; height: 100%; object-fit: cover; }
-        
+        .poli-item, .pay-opt { transition: all 0.2s; border: 1px solid #e2e8f0; cursor: pointer; }
+        .poli-item:hover, .pay-opt:hover { border-color: #0f766e; background-color: #f0fdfa; }
+        .poli-item.selected, .pay-opt.selected { border-color: #0f766e; background-color: #f0fdfa; ring: 1px solid #0f766e; }
+
         /* Article Styling */
-        .article-content h4 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; color: #115e59; margin-top: 1.5rem; margin-bottom: 0.5rem; }
-        .article-content p { margin-bottom: 1rem; line-height: 1.7; color: #334155; }
-        .article-content ul, .article-content ol { margin-bottom: 1rem; padding-left: 1.5rem; color: #334155; }
+        .article-content h4 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; color: #1e293b; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+        .article-content p { margin-bottom: 1rem; line-height: 1.7; }
+        .article-content ul, .article-content ol { margin-bottom: 1rem; padding-left: 1.5rem; }
         .article-content ul { list-style-type: disc; }
         .article-content ol { list-style-type: decimal; }
-        .article-box { background-color: #f0fdfa; padding: 1rem; border-radius: 0.75rem; border: 1px solid #ccfbf1; font-size: 0.875rem; color: #0f766e; font-style: italic; margin-top: 1rem; }
+
+        .img-cover { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* Nakes Specific */
+        .card-stat { background: white; border-radius: 20px; padding: 16px; border: 1px solid #f1f5f9; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .patient-card { transition: all 0.2s; }
+        .patient-card:hover { transform: translateY(-2px); box-shadow: 0 8px 16px -4px rgba(0,0,0,0.05); }
+
+        /* Prescription Paper Style */
+        .resep-asli {
+            background-color: #fff;
+            background-image: radial-gradient(#f0f0f0 1px, transparent 1px);
+            background-size: 20px 20px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .resep-font { font-family: 'Courier Prime', monospace; }
+        .signature-font { font-family: 'Lora', serif; font-style: italic; }
+        
+        /* ID Card Gradient */
+        .bg-id-card { background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%); }
     </style>
 </head>
 <body>
 
     <div id="phone-frame">
 
-        <!-- 1. SPLASH SCREEN (INFO PENGEMBANG) -->
+        <!-- 1. SPLASH SCREEN -->
         <div id="screen-splash" class="screen active z-50 bg-primary-700 text-white items-center justify-center relative overflow-hidden">
-            <!-- Decorative Circles -->
             <div class="absolute -top-20 -right-20 w-64 h-64 bg-primary-500 rounded-full blur-3xl opacity-30"></div>
             <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-secondary-500 rounded-full blur-3xl opacity-20"></div>
 
-            <div class="relative z-10 flex flex-col items-center px-8 text-center h-full justify-center">
+            <div class="relative z-10 flex flex-col items-center text-center px-8 animate-fade-in">
                 <div class="w-24 h-24 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center mb-6 shadow-glow border border-white/20">
                     <i class="ph-fill ph-heartbeat text-5xl text-white"></i>
                 </div>
                 <h1 class="text-4xl font-serif font-bold tracking-wide mb-2">MediTrack</h1>
                 <p class="text-primary-100 text-sm font-light leading-relaxed mb-8 max-w-xs">
-                    Aplikasi pendamping minum obat untuk pasien, sekaligus alat bantu tenaga kesehatan untuk memantau terapi.
+                    Platform Kesehatan Terintegrasi
                 </p>
                 <div class="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin mb-12"></div>
-                
-                <!-- Info Pengembang -->
-                <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 w-full shadow-soft border border-white/20 animate-fade-in">
-                    <h3 class="text-xs font-bold text-primary-200 uppercase tracking-widest mb-3">Tim Pengembang</h3>
-                    <ul class="text-[10px] text-white space-y-1.5 text-left font-medium">
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-secondary-500"></div> Siti Fahdia Rahmatullah A. (2100023196)</li>
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-secondary-500"></div> Adhwa Rizqy Hanifah (2200023196)</li>
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-secondary-500"></div> Rahma Amelia Izzaty (2200023197)</li>
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-secondary-500"></div> Sitta Istiqomah Said (2200023199)</li>
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-secondary-500"></div> Ridha Rahmatul Azizah (2200023201)</li>
-                    </ul>
-                </div>
             </div>
         </div>
 
@@ -156,38 +164,31 @@
                 <img src="https://images.unsplash.com/photo-1631815589968-fdb09a223b1e?auto=format&fit=crop&q=80&w=600" class="img-cover rounded-b-[40px] shadow-lg brightness-75">
                 <div class="absolute inset-0 bg-gradient-to-t from-primary-900/90 to-transparent rounded-b-[40px] flex flex-col justify-end p-8 text-white">
                     <h2 class="font-serif text-3xl mb-1">Selamat Datang</h2>
-                    <p class="text-primary-100 text-sm opacity-90">Pilih akses masuk Anda</p>
+                    <p class="text-primary-100 text-sm opacity-90">Pilih peran Anda</p>
                 </div>
             </div>
+            
             <div class="scroll-content px-6 -mt-8 relative z-10">
                 <div class="bg-white rounded-3xl p-6 shadow-floating space-y-4">
+                    <!-- Tombol Pasien -->
                     <button onclick="goToScreen('screen-login')" class="w-full p-4 rounded-2xl border border-gray-100 bg-white hover:border-primary-500 hover:bg-primary-50 transition-all flex items-center gap-4 group">
                         <div class="w-12 h-12 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="ph-fill ph-user"></i></div>
                         <div class="text-left flex-1"><h3 class="font-bold text-gray-800">Pasien</h3><p class="text-xs text-gray-500">Masuk ke layanan personal</p></div>
                         <i class="ph-bold ph-caret-right text-gray-300"></i>
                     </button>
-                    <button onclick="showDevModal()" class="w-full p-4 rounded-2xl border border-gray-100 bg-white hover:border-secondary-500 hover:bg-secondary-50 transition-all flex items-center gap-4 group">
-                        <div class="w-12 h-12 rounded-full bg-secondary-100 text-secondary-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="ph-fill ph-stethoscope"></i></div>
-                        <div class="text-left flex-1"><h3 class="font-bold text-gray-800">Tenaga Kesehatan</h3><p class="text-xs text-gray-500">Dashboard Profesional</p></div>
+                    <!-- Tombol Nakes -->
+                    <button onclick="goToScreen('screen-login-nakes')" class="w-full p-4 rounded-2xl border border-gray-100 bg-white hover:border-nakes-500 hover:bg-nakes-50 transition-all flex items-center gap-4 group">
+                        <div class="w-12 h-12 rounded-full bg-nakes-100 text-nakes-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="ph-fill ph-prescription"></i></div>
+                        <div class="text-left flex-1"><h3 class="font-bold text-gray-800">Apoteker / Nakes</h3><p class="text-xs text-gray-500">Portal Profesional</p></div>
                         <i class="ph-bold ph-lock-key text-gray-300"></i>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- MODAL DEV -->
-        <div id="modal-dev" class="fixed inset-0 z-50 bg-black/40 hidden items-center justify-center p-6 backdrop-blur-sm animate-fade-in">
-            <div class="bg-white w-full max-w-sm rounded-[32px] p-8 text-center shadow-2xl">
-                <div class="w-16 h-16 bg-secondary-100 text-secondary-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl"><i class="ph-fill ph-cone"></i></div>
-                <h3 class="text-lg font-bold text-gray-900 mb-2">Segera Hadir</h3>
-                <p class="text-sm text-gray-500 mb-6">Mode Tenaga Kesehatan sedang dalam tahap pengembangan akhir.</p>
-                <button onclick="document.getElementById('modal-dev').classList.add('hidden')" class="w-full py-3 bg-gray-900 text-white rounded-xl font-bold text-sm">Mengerti</button>
-            </div>
-        </div>
-
-        <!-- 3. LOGIN -->
+        <!-- 3. LOGIN PASIEN -->
         <div id="screen-login" class="screen bg-white">
-            <div class="px-8 pt-20 flex flex-col h-full">
+            <div class="px-8 pt-16 flex flex-col h-full">
                 <button onclick="goToScreen('screen-role')" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center mb-8 hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button>
                 <h2 class="text-3xl font-serif font-bold text-gray-900 mb-2">Login Akun</h2>
                 <p class="text-gray-500 mb-8 text-sm">Silakan masukkan data diri Anda.</p>
@@ -199,15 +200,555 @@
             </div>
         </div>
 
+        <!-- 3B. LOGIN NAKES (APOTEKER) -->
+        <div id="screen-login-nakes" class="screen bg-white">
+            <div class="px-8 pt-16 flex flex-col h-full relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-40 h-40 bg-nakes-100 rounded-bl-full -mr-10 -mt-10 opacity-50 z-0"></div>
+                <div class="relative z-10">
+                    <button onclick="goToScreen('screen-role')" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center mb-8 hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button>
+                    <span class="px-3 py-1 rounded-full bg-nakes-50 text-nakes-700 text-[10px] font-bold tracking-widest border border-nakes-100 mb-4 inline-block">APOTEKER ACCESS</span>
+                    <h2 class="text-3xl font-serif font-bold text-gray-900 mb-2">Portal Apoteker</h2>
+                    <p class="text-gray-500 mb-8 text-sm">Masuk untuk memantau terapi pasien.</p>
+                    <form onsubmit="handleLoginNakes(event)" class="space-y-5">
+                        <div><label class="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">No. SIPA / STRA</label><input type="text" value="19900101/SIPA/2024" class="w-full mt-2 p-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-nakes-500 focus:ring-4 focus:ring-nakes-100 outline-none font-semibold text-gray-800 transition-all font-mono"></div>
+                        <div><label class="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">PIN Akses</label><input type="password" value="123456" class="w-full mt-2 p-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-nakes-500 focus:ring-4 focus:ring-nakes-100 outline-none font-semibold text-gray-800 transition-all"></div>
+                        <button type="submit" class="w-full py-4 rounded-2xl bg-nakes-700 text-white font-bold shadow-lg shadow-nakes-500/30 active:scale-95 transition-transform mt-6 flex justify-center gap-2 items-center"><span>Masuk Dashboard</span><i class="ph-bold ph-arrow-right"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= BAGIAN NAKES ================= -->
+
+        <!-- 4B. HOME NAKES DASHBOARD -->
+        <div id="screen-home-nakes" class="screen bg-gray-50">
+            <!-- Header Nakes -->
+            <div class="bg-nakes-700 px-6 pt-14 pb-8 rounded-b-[40px] shadow-lg sticky top-0 z-30 relative overflow-hidden">
+                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                <div class="flex justify-between items-center mb-6 relative z-10">
+                    <div>
+                        <p class="text-xs text-nakes-200 font-bold uppercase tracking-wider mb-0.5">Selamat Bertugas</p>
+                        <h2 class="text-2xl font-serif font-bold text-white">Apt. Tirto, S.Farm</h2>
+                    </div>
+                    <div onclick="goToScreen('screen-role')" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white border border-white/20 cursor-pointer"><i class="ph-bold ph-sign-out"></i></div>
+                </div>
+                <!-- Stats Overview -->
+                <div class="flex gap-3 relative z-10">
+                    <div class="flex-1 bg-white/10 backdrop-blur-sm rounded-2xl p-3 border border-white/10 text-center">
+                        <div class="text-2xl font-bold text-white">12</div>
+                        <div class="text-[10px] text-nakes-100">Pasien Aktif</div>
+                    </div>
+                    <div class="flex-1 bg-rose-500/20 backdrop-blur-sm rounded-2xl p-3 border border-rose-500/30 text-center">
+                        <div class="text-2xl font-bold text-white flex gap-1 justify-center items-center">3 <span class="w-2 h-2 rounded-full bg-rose-400 animate-pulse"></span></div>
+                        <div class="text-[10px] text-rose-100">Risiko Tinggi</div>
+                    </div>
+                    <div class="flex-1 bg-amber-500/20 backdrop-blur-sm rounded-2xl p-3 border border-amber-500/30 text-center">
+                        <div class="text-2xl font-bold text-white">5</div>
+                        <div class="text-[10px] text-amber-100">Diskusi Baru</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scroll-content px-6 pt-6">
+                <!-- Search Patient -->
+                <div class="relative mb-6">
+                    <i class="ph-bold ph-magnifying-glass absolute left-4 top-3.5 text-gray-400"></i>
+                    <input type="text" placeholder="Cari Nama Pasien / No. RM" class="w-full pl-12 pr-4 py-3 bg-white rounded-2xl border-none shadow-sm text-sm outline-none focus:ring-2 focus:ring-nakes-500 transition-all">
+                </div>
+
+                <!-- Patient List (Quick Access) -->
+                <div class="flex justify-between items-end mb-4">
+                    <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2"><span class="w-1 h-5 bg-nakes-500 rounded-full"></span> Daftar Pasien</h3>
+                    <span onclick="goToScreen('screen-nakes-list-pasien')" class="text-[10px] font-bold text-nakes-600 cursor-pointer">Lihat Semua</span>
+                </div>
+
+                <!-- Dynamic Patient List Container -->
+                <div id="nakes-patient-list" class="space-y-3 mb-8">
+                    <!-- List will be populated by JS -->
+                </div>
+
+                <!-- Menu Grid -->
+                <h3 class="text-sm font-bold text-gray-800 mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-purple-500 rounded-full"></span> Alat Bantu</h3>
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <!-- Diskusi Kasus -->
+                    <div onclick="goToScreen('screen-nakes-forum')" class="bg-white p-5 rounded-3xl shadow-sm border border-transparent hover:border-nakes-500 cursor-pointer group transition-all">
+                        <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl mb-3 group-hover:scale-110 transition-transform"><i class="ph-fill ph-users-three"></i></div>
+                        <h4 class="font-bold text-gray-900 text-sm">Forum Kasus</h4>
+                        <p class="text-[10px] text-gray-500 mt-1">Diskusi Lintas Profesi</p>
+                    </div>
+                    <!-- Regulasi (Baru) -->
+                    <div onclick="goToScreen('screen-nakes-guidelines')" class="bg-white p-5 rounded-3xl shadow-sm border border-transparent hover:border-nakes-500 cursor-pointer group transition-all">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl mb-3 group-hover:scale-110 transition-transform"><i class="ph-fill ph-book-bookmark"></i></div>
+                        <h4 class="font-bold text-gray-900 text-sm">Pedoman</h4>
+                        <p class="text-[10px] text-gray-500 mt-1">Regulasi & Tatalaksana</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5A. NAKES LIST PASIEN (SELECT PATIENT SCREEN) -->
+        <div id="screen-nakes-list-pasien" class="screen bg-gray-50">
+            <div class="glass-header px-6 pt-14 pb-4 flex gap-4 sticky top-0 z-20">
+                <button onclick="goToScreen('screen-home-nakes')" class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button>
+                <div class="flex-1">
+                    <h2 class="font-bold text-gray-900 mt-1">Pilih Pasien</h2>
+                    <p class="text-[10px] text-gray-500">Pilih untuk melihat rekam medis</p>
+                </div>
+            </div>
+            <div class="scroll-content px-6 pt-6">
+                <!-- Search -->
+                <div class="relative mb-6">
+                    <i class="ph-bold ph-magnifying-glass absolute left-4 top-3.5 text-gray-400"></i>
+                    <input type="text" id="patient-search-input" onkeyup="filterPatients()" placeholder="Cari nama pasien..." class="w-full pl-12 pr-4 py-3 bg-white rounded-2xl border-none shadow-sm text-sm outline-none focus:ring-2 focus:ring-nakes-500 transition-all">
+                </div>
+                
+                <!-- List -->
+                <div id="full-patient-list" class="space-y-3 pb-24">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 5B. NAKES PATIENT DETAIL (FULL MEDICAL RECORD) -->
+        <div id="screen-nakes-patient-detail" class="screen bg-gray-50">
+            <div class="glass-header px-6 pt-14 pb-4 flex gap-4 sticky top-0 z-20">
+                <button onclick="goBackFromDetail()" class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button>
+                <div class="flex-1">
+                    <h2 class="font-bold text-gray-900 mt-1">Rekam Medis</h2>
+                    <p class="text-[10px] text-gray-500" id="detail-patient-id">ID: -</p>
+                </div>
+                <!-- Tombol Lihat Resep Asli -->
+                <button onclick="viewOriginalRx()" class="px-3 py-2 bg-nakes-100 text-nakes-700 text-[10px] font-bold rounded-xl hover:bg-nakes-200 transition-colors flex items-center gap-1">
+                    <i class="ph-fill ph-file-text"></i> Resep Asli
+                </button>
+            </div>
+
+            <div class="scroll-content px-6 pt-6">
+                <!-- Patient Header Info -->
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 mb-6 text-center relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-16 bg-gradient-to-r from-nakes-500 to-nakes-600 opacity-10"></div>
+                    <img id="detail-img" src="" class="w-20 h-20 rounded-full object-cover mx-auto mb-3 border-4 border-white shadow-md relative z-10">
+                    <h2 class="text-xl font-bold text-gray-900" id="detail-name">-</h2>
+                    <p class="text-xs text-gray-500 mb-4" id="detail-desc">-</p>
+                    
+                    <div class="flex justify-center gap-4 text-left">
+                        <div class="bg-gray-50 px-3 py-2 rounded-xl border border-gray-100">
+                            <p class="text-[10px] text-gray-400 uppercase font-bold">Usia</p>
+                            <p class="font-bold text-gray-800" id="detail-age">-</p>
+                        </div>
+                        <div class="bg-gray-50 px-3 py-2 rounded-xl border border-gray-100">
+                            <p class="text-[10px] text-gray-400 uppercase font-bold">BB/TB</p>
+                            <p class="font-bold text-gray-800" id="detail-body">-</p>
+                        </div>
+                        <div class="bg-rose-50 px-3 py-2 rounded-xl border border-rose-100">
+                            <p class="text-[10px] text-rose-400 uppercase font-bold">Alergi</p>
+                            <p class="font-bold text-rose-700" id="detail-allergy">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs Navigation -->
+                <div class="flex gap-2 mb-6 bg-gray-200 p-1 rounded-xl overflow-x-auto no-scrollbar">
+                    <button onclick="switchDetailTab('tab-ringkasan', this)" class="detail-tab-btn flex-1 py-2 px-3 rounded-lg text-[10px] font-bold bg-white shadow text-nakes-700 whitespace-nowrap">Ringkasan</button>
+                    <button onclick="switchDetailTab('tab-evaluasi', this)" class="detail-tab-btn flex-1 py-2 px-3 rounded-lg text-[10px] font-bold text-gray-500 hover:bg-gray-50 whitespace-nowrap">Evaluasi</button>
+                    <button onclick="switchDetailTab('tab-kepatuhan', this)" class="detail-tab-btn flex-1 py-2 px-3 rounded-lg text-[10px] font-bold text-gray-500 hover:bg-gray-50 whitespace-nowrap">Kepatuhan</button>
+                    <button onclick="switchDetailTab('tab-efek', this)" class="detail-tab-btn flex-1 py-2 px-3 rounded-lg text-[10px] font-bold text-gray-500 hover:bg-gray-50 whitespace-nowrap">Efek Samping</button>
+                </div>
+
+                <!-- TAB: Ringkasan & Obat -->
+                <div id="tab-ringkasan" class="detail-content animate-fade-in">
+                    <!-- Current Diagnoses -->
+                    <div class="mb-6">
+                        <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Diagnosa Utama</h4>
+                        <div class="bg-white p-4 rounded-2xl shadow-sm border border-l-4 border-gray-100 border-l-nakes-500">
+                            <h3 class="font-bold text-gray-900" id="detail-diagnosis">-</h3>
+                            <p class="text-xs text-gray-500 mt-1">Sejak: <span id="detail-since">-</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Medication List (Evaluasi Rasionalitas) -->
+                    <div class="mb-6">
+                        <div class="flex justify-between items-end mb-3">
+                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Terapi Farmasi Aktif</h4>
+                            <button onclick="checkInteractionMock()" class="text-[10px] font-bold text-white bg-nakes-600 px-3 py-1.5 rounded-lg shadow-md hover:bg-nakes-700"><i class="ph-bold ph-lightning"></i> Cek Interaksi</button>
+                        </div>
+                        <div id="detail-med-list" class="space-y-3">
+                            <!-- Populated by JS -->
+                        </div>
+                        <!-- Interaction Result Placeholder -->
+                        <div id="interaction-box" class="hidden mt-4 bg-amber-50 p-4 rounded-2xl border border-amber-200 animate-slide-up">
+                            <div class="flex gap-3">
+                                <i class="ph-fill ph-warning text-amber-600 text-xl"></i>
+                                <div>
+                                    <h5 class="text-xs font-bold text-amber-800">Peringatan Interaksi</h5>
+                                    <p class="text-[10px] text-amber-700 mt-1" id="interaction-msg">...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: Evaluasi Rasionalitas (UPDATED FLOW) -->
+                <div id="tab-evaluasi" class="detail-content hidden animate-fade-in">
+                    <div id="eval-drug-list">
+                        <h4 class="text-sm font-bold text-gray-900 mb-4">Pilih Obat untuk Evaluasi</h4>
+                        <div id="eval-drug-buttons" class="space-y-3">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+
+                    <div id="eval-form" class="hidden">
+                        <div class="flex items-center gap-3 mb-4">
+                            <button onclick="backToEvalList()" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600"><i class="ph-bold ph-arrow-left"></i></button>
+                            <div>
+                                <h4 class="text-sm font-bold text-gray-900" id="eval-selected-drug-name">Nama Obat</h4>
+                                <p class="text-[10px] text-gray-500">Formulir Evaluasi 4T + 1W</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 mb-6">
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                                    <span class="text-xs text-gray-700 font-medium">Tepat Indikasi</span>
+                                    <input type="checkbox" class="w-5 h-5 accent-nakes-600">
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                                    <span class="text-xs text-gray-700 font-medium">Tepat Pasien (Kontraindikasi)</span>
+                                    <input type="checkbox" class="w-5 h-5 accent-nakes-600">
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                                    <span class="text-xs text-gray-700 font-medium">Tepat Obat</span>
+                                    <input type="checkbox" class="w-5 h-5 accent-nakes-600">
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                                    <span class="text-xs text-gray-700 font-medium">Tepat Dosis & Cara Pemberian</span>
+                                    <input type="checkbox" class="w-5 h-5 accent-nakes-600">
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-rose-50 border border-rose-100 rounded-xl">
+                                    <span class="text-xs text-rose-700 font-medium">Waspada Efek Samping</span>
+                                    <input type="checkbox" class="w-5 h-5 accent-rose-600">
+                                </div>
+                            </div>
+                            <hr class="my-4 border-gray-100">
+                            <textarea class="w-full bg-gray-50 p-3 rounded-xl text-xs border border-gray-200 outline-none h-24 resize-none" placeholder="Catatan evaluasi klinis apoteker untuk obat ini..."></textarea>
+                            <button onclick="saveDrugEvaluation()" class="w-full mt-3 py-2.5 bg-nakes-600 text-white text-xs font-bold rounded-xl hover:bg-nakes-700 transition-colors">Simpan Evaluasi</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: Monitoring Kepatuhan -->
+                <div id="tab-kepatuhan" class="detail-content hidden animate-fade-in">
+                    <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-xs font-bold text-gray-900">Grafik 7 Hari Terakhir</h4>
+                            <span class="px-2 py-1 rounded text-[10px] font-bold" id="detail-compliance-badge">85%</span>
+                        </div>
+                        <div class="h-48">
+                            <canvas id="detailComplianceChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Dosis Terlewat (Missed Dose)</h4>
+                    <div class="space-y-3" id="detail-missed-doses">
+                        <!-- Populated JS -->
+                    </div>
+                </div>
+
+                <!-- TAB: Efek Samping (New) -->
+                <div id="tab-efek" class="detail-content hidden animate-fade-in">
+                    <div class="flex justify-between items-end mb-3">
+                        <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Laporan Keluhan (ADR)</h4>
+                        <button onclick="showInterventionModal()" class="text-[10px] font-bold text-white bg-rose-600 px-3 py-1.5 rounded-lg shadow-md hover:bg-rose-700 flex items-center gap-1"><i class="ph-bold ph-pencil-simple"></i> Intervensi</button>
+                    </div>
+                    <div class="space-y-3" id="detail-side-effects">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- TAB: Riwayat Penyakit -->
+                <div id="tab-riwayat" class="detail-content hidden animate-fade-in">
+                    <div class="space-y-4 relative pl-4 border-l-2 border-gray-200 ml-2" id="detail-history-list">
+                        <!-- Timeline items -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL SET REMINDER -->
+        <div id="modal-set-reminder" class="fixed inset-0 z-50 bg-black/60 hidden items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
+            <div class="bg-white w-full max-w-xs rounded-3xl p-6 relative animate-slide-up">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-gray-900">Atur Pengingat</h3>
+                    <button onclick="document.getElementById('modal-set-reminder').classList.add('hidden')" class="text-gray-400 hover:text-gray-600"><i class="ph-bold ph-x text-xl"></i></button>
+                </div>
+                <div class="bg-nakes-50 p-3 rounded-xl mb-4 text-center">
+                    <p class="text-[10px] text-nakes-600 uppercase font-bold">Obat</p>
+                    <p class="font-bold text-nakes-900" id="reminder-drug-name">-</p>
+                </div>
+                <div class="space-y-3">
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase">Frekuensi</label>
+                        <select class="w-full mt-1 p-3 bg-gray-50 rounded-xl text-sm border border-gray-200 outline-none">
+                            <option>1x Sehari</option>
+                            <option>2x Sehari</option>
+                            <option>3x Sehari</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase">Waktu</label>
+                        <input type="time" value="08:00" class="w-full mt-1 p-3 bg-gray-50 rounded-xl text-sm border border-gray-200 outline-none">
+                    </div>
+                    <button onclick="saveReminder()" class="w-full py-3 bg-nakes-600 text-white rounded-xl font-bold hover:bg-nakes-700 transition-colors">Kirim ke Pasien</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL VIEW ORIGINAL PRESCRIPTION (DIGITAL RX) -->
+        <div id="modal-view-rx" class="fixed inset-0 z-50 bg-black/80 hidden items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
+            <div class="bg-white w-full max-w-sm rounded-none sm:rounded-lg shadow-2xl relative animate-slide-up resep-asli min-h-[500px] flex flex-col">
+                <button onclick="document.getElementById('modal-view-rx').classList.add('hidden')" class="absolute -top-10 right-0 text-white hover:text-gray-200"><i class="ph-bold ph-x text-2xl"></i> Tutup</button>
+                
+                <!-- Kop Resep -->
+                <div class="p-6 border-b-2 border-black border-double text-center">
+                    <h3 class="font-bold text-xl text-gray-900 font-serif">RS HERMINA YOGYAKARTA</h3>
+                    <p class="text-[10px] text-gray-600">Jl. Mataram No. 123, Yogyakarta</p>
+                    <p class="text-[10px] text-gray-600">Telp: (0274) 555-777 | SIP: 445/1234/Dinkes</p>
+                </div>
+
+                <!-- Isi Resep -->
+                <div class="p-6 flex-1 resep-font text-gray-800 text-sm">
+                    <div class="flex justify-between mb-6 border-b border-gray-200 pb-2">
+                        <span>Yogyakarta, <span id="rx-date">20 Des 2024</span></span>
+                    </div>
+                    
+                    <div class="space-y-6" id="rx-content">
+                        <!-- Dynamic Content -->
+                    </div>
+                </div>
+
+                <!-- Footer / Signature -->
+                <div class="p-6 pt-0 flex justify-end">
+                    <div class="text-center">
+                        <div class="h-16 flex items-end justify-center mb-1">
+                            <span class="signature-font text-xl text-blue-900 transform -rotate-6">dr. Andi Sp.PD</span>
+                        </div>
+                        <p class="text-[10px] border-t border-black pt-1 uppercase font-bold">dr. Andi, Sp.PD</p>
+                        <p class="text-[9px]">SIP. 19850101.2010</p>
+                    </div>
+                </div>
+                
+                <!-- Patient Tag -->
+                <div class="bg-gray-100 p-3 text-[10px] border-t border-gray-200">
+                    <span class="font-bold">Pro:</span> <span id="rx-patient-name">Fritty</span> <span class="float-right" id="rx-patient-age">24 Th</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL INTERVENSI -->
+        <div id="modal-intervention" class="fixed inset-0 z-50 bg-black/60 hidden items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
+            <div class="bg-white w-full max-w-sm rounded-3xl p-6 relative animate-slide-up">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-gray-900">Catat Intervensi</h3>
+                    <button onclick="document.getElementById('modal-intervention').classList.add('hidden')" class="text-gray-400 hover:text-gray-600"><i class="ph-bold ph-x text-xl"></i></button>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase">Jenis Masalah</label>
+                        <select class="w-full mt-1 p-3 bg-gray-50 rounded-xl text-sm border border-gray-200 outline-none">
+                            <option>Efek Samping Obat (ADR)</option>
+                            <option>Interaksi Obat</option>
+                            <option>Kepatuhan Rendah</option>
+                            <option>Dosis Tidak Tepat</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase">Rekomendasi / Tindakan</label>
+                        <textarea class="w-full mt-1 p-3 bg-gray-50 rounded-xl text-sm border border-gray-200 h-24 outline-none resize-none" placeholder="Contoh: Stop obat X, ganti dengan Y..."></textarea>
+                    </div>
+                    <button onclick="saveIntervention()" class="w-full py-3 bg-nakes-600 text-white rounded-xl font-bold hover:bg-nakes-700 transition-colors">Simpan Dokumentasi</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL ID CARD NAKES (NEW) -->
+        <div id="modal-nakes-id-card" class="fixed inset-0 z-[60] bg-black/80 hidden items-center justify-center p-6 backdrop-blur-sm flex-col animate-fade-in" onclick="this.classList.add('hidden')">
+            <div class="bg-white w-full max-w-xs rounded-3xl overflow-hidden shadow-2xl relative" onclick="event.stopPropagation()">
+                <!-- ID Card Header -->
+                <div class="bg-id-card p-6 pb-12 relative">
+                    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
+                    <div class="relative z-10 flex justify-between items-start">
+                        <div class="w-10 h-10 bg-white/20 backdrop-blur rounded-full flex items-center justify-center text-white text-xl border border-white/30"><i class="ph-fill ph-hospital"></i></div>
+                        <div class="text-right text-white">
+                            <h3 class="font-bold text-sm tracking-wider uppercase">RS Hermina</h3>
+                            <p class="text-[10px] opacity-80">Access Pass</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profile Section -->
+                <div class="px-6 pb-6 relative text-center">
+                    <div class="w-24 h-24 rounded-full border-4 border-white bg-white shadow-lg mx-auto -mt-12 mb-4 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=300" class="w-full h-full object-cover">
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-900">Apt. Tirto, S.Farm</h2>
+                    <p class="text-xs text-nakes-600 font-bold uppercase tracking-widest mb-1">Apoteker Klinis</p>
+                    <p class="text-[10px] text-gray-400 mb-6">ID: NAKES-2024-001</p>
+                    
+                    <div class="bg-gray-50 rounded-xl p-3 border border-gray-100 mb-6">
+                        <p class="text-[10px] text-gray-400 uppercase font-bold mb-1">No. SIPA</p>
+                        <p class="font-mono text-sm font-bold text-gray-800">1990.01.2024.001</p>
+                    </div>
+
+                    <!-- Barcode -->
+                    <div class="mb-2">
+                        <p class="font-barcode text-5xl text-gray-800 tracking-widest opacity-80">*NAKES001*</p>
+                    </div>
+                    <p class="text-[9px] text-gray-400">Scan untuk akses fasilitas</p>
+                </div>
+            </div>
+            <p class="text-white text-xs mt-4 animate-pulse">Ketuk area luar untuk menutup</p>
+        </div>
+
+        <!-- 6. NAKES PEDOMAN (GUIDELINES) -->
+        <div id="screen-nakes-guidelines" class="screen bg-gray-50">
+            <div class="glass-header px-6 pt-14 pb-4 flex gap-4 sticky top-0 z-20">
+                <button onclick="goToScreen('screen-home-nakes')" class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button>
+                <div class="flex-1">
+                    <h2 class="font-bold text-gray-900 mt-1">Pedoman Terapi</h2>
+                    <p class="text-[10px] text-gray-500">Regulasi & Tatalaksana Nasional</p>
+                </div>
+            </div>
+            <div class="scroll-content px-6 pt-6 pb-24 space-y-4">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex gap-4 items-center cursor-pointer hover:border-nakes-500 transition-all" onclick="openGuideline('hipertensi')">
+                    <div class="w-12 h-12 bg-red-50 text-red-600 rounded-xl flex items-center justify-center text-2xl"><i class="ph-fill ph-heartbeat"></i></div>
+                    <div><h4 class="font-bold text-gray-900 text-sm">Tatalaksana Hipertensi</h4><p class="text-[10px] text-gray-500">PERHI 2023 • Konsensus InaSH</p></div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex gap-4 items-center cursor-pointer hover:border-nakes-500 transition-all" onclick="openGuideline('tb')">
+                    <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center text-2xl"><i class="ph-fill ph-lungs"></i></div>
+                    <div><h4 class="font-bold text-gray-900 text-sm">Pedoman Nasional TB</h4><p class="text-[10px] text-gray-500">Kemenkes RI 2023 • PNPK</p></div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex gap-4 items-center cursor-pointer hover:border-nakes-500 transition-all" onclick="openGuideline('diabetes')">
+                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-2xl"><i class="ph-fill ph-drop"></i></div>
+                    <div><h4 class="font-bold text-gray-900 text-sm">Konsensus DM Tipe 2</h4><p class="text-[10px] text-gray-500">PERKENI 2021</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL GUIDELINE VIEWER -->
+        <div id="modal-guideline" class="fixed inset-0 z-50 bg-white hidden flex-col animate-fade-in">
+            <div class="px-6 pt-14 pb-4 border-b border-gray-100 flex items-center justify-between bg-white">
+                <button onclick="document.getElementById('modal-guideline').classList.add('hidden')" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-x"></i></button>
+                <h3 class="font-bold text-gray-900" id="guideline-title">Dokumen</h3>
+                <div class="w-10"></div>
+            </div>
+            <div class="flex-1 bg-gray-50 p-6 overflow-y-auto">
+                <div class="bg-white p-8 shadow-sm min-h-full rounded-none sm:rounded-xl prose prose-sm max-w-none" id="guideline-content">
+                    <!-- Content injected here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 6B. NAKES FORUM LIST -->
+        <div id="screen-nakes-forum" class="screen bg-gray-50">
+            <div class="glass-header px-6 pt-14 pb-4 flex justify-between items-center sticky top-0 z-20">
+                <div class="flex gap-4 items-center">
+                    <button onclick="goToScreen('screen-home-nakes')" class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button>
+                    <h2 class="font-bold text-gray-900">Forum Kasus</h2>
+                </div>
+                <button class="w-10 h-10 bg-nakes-600 rounded-full text-white flex items-center justify-center shadow-lg"><i class="ph-bold ph-plus"></i></button>
+            </div>
+            
+            <div class="scroll-content px-6 pt-6 pb-24" id="forum-list-container">
+                <!-- Forum cards will be injected here via JS -->
+            </div>
+        </div>
+
+        <!-- 6C. NAKES FORUM DETAIL -->
+        <div id="screen-forum-detail" class="screen bg-white">
+            <div class="glass-header px-6 pt-14 pb-4 flex gap-4 sticky top-0 z-20">
+                <button onclick="goToScreen('screen-nakes-forum')" class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button>
+                <div class="flex-1">
+                    <h2 class="font-bold text-gray-900 mt-1">Diskusi Detail</h2>
+                    <p class="text-[10px] text-gray-500">Komentar & Rekomendasi</p>
+                </div>
+            </div>
+
+            <div class="scroll-content px-6 pt-6 pb-32">
+                <div class="mb-6" id="forum-detail-content">
+                    <!-- Populated by JS -->
+                </div>
+                <hr class="border-gray-100 my-4">
+                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Komentar Sejawat</h4>
+                <div id="forum-comments-list" class="space-y-4">
+                    <!-- Comments injected here -->
+                </div>
+            </div>
+
+            <div class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-4 z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+                <div class="flex gap-2 items-center">
+                    <div class="w-10 h-10 rounded-full bg-nakes-100 flex items-center justify-center text-nakes-600 flex-shrink-0">
+                        <i class="ph-fill ph-user-circle text-2xl"></i>
+                    </div>
+                    <div class="flex-1 relative">
+                        <input type="text" id="comment-input" placeholder="Tulis rekomendasi..." class="w-full bg-gray-50 rounded-full py-3 pl-4 pr-12 text-sm outline-none focus:ring-2 focus:ring-nakes-500 focus:bg-white border border-transparent focus:border-nakes-200 transition-all">
+                        <button onclick="postComment()" class="absolute right-1 top-1 w-8 h-8 rounded-full bg-nakes-600 text-white flex items-center justify-center hover:bg-nakes-700 transition-colors shadow-sm">
+                            <i class="ph-fill ph-paper-plane-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7B. NAKES PROFIL -->
+        <div id="screen-nakes-profil" class="screen bg-gray-50">
+            <div class="relative h-48 bg-nakes-700">
+                <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+                <div class="absolute -bottom-12 left-0 right-0 flex justify-center">
+                    <div class="w-28 h-28 rounded-full border-4 border-white bg-white overflow-hidden shadow-lg p-1">
+                        <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=300" class="img-cover rounded-full">
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-content px-6 pt-16 text-center">
+                <h2 class="text-2xl font-bold text-gray-900">Apt. Tirto, S.Farm</h2>
+                <p class="text-sm text-gray-500">Apoteker Klinis • Bergabung 2023</p>
+                
+                <div class="mt-4 flex justify-center gap-2 mb-8">
+                    <span class="bg-nakes-50 text-nakes-700 px-3 py-1 rounded-full text-[10px] font-bold border border-nakes-100">SIPA: 1990.01.2024</span>
+                    <span class="bg-purple-50 text-purple-700 px-3 py-1 rounded-full text-[10px] font-bold border border-purple-100">RS Hermina</span>
+                </div>
+
+                <div class="space-y-3 text-left">
+                    <button class="w-full bg-white p-4 rounded-2xl flex items-center justify-between shadow-sm border border-gray-100 hover:border-nakes-500 group transition-all">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-600 flex items-center justify-center group-hover:bg-nakes-50 group-hover:text-nakes-600 transition-colors"><i class="ph-fill ph-user-gear"></i></div>
+                            <span class="text-sm font-bold text-gray-700">Edit Profil Profesional</span>
+                        </div>
+                        <i class="ph-bold ph-caret-right text-gray-300"></i>
+                    </button>
+                    <button class="w-full bg-white p-4 rounded-2xl flex items-center justify-between shadow-sm border border-gray-100 hover:border-nakes-500 group transition-all">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-600 flex items-center justify-center group-hover:bg-nakes-50 group-hover:text-nakes-600 transition-colors"><i class="ph-fill ph-bell"></i></div>
+                            <span class="text-sm font-bold text-gray-700">Pengaturan Notifikasi</span>
+                        </div>
+                        <i class="ph-bold ph-caret-right text-gray-300"></i>
+                    </button>
+                    
+                    <button onclick="goToScreen('screen-role')" class="w-full mt-6 p-4 bg-rose-50 text-rose-600 font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-rose-100 transition-colors border border-rose-100">
+                        <i class="ph-bold ph-sign-out"></i> Keluar Akun
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= BAGIAN PASIEN (TETAP SAMA) ================= -->
         <!-- 4. HOME PASIEN -->
         <div id="screen-home" class="screen bg-gray-50">
-            <div class="bg-white px-6 pt-16 pb-6 rounded-b-[40px] shadow-sm sticky top-0 z-30">
+            <div class="bg-white px-6 pt-14 pb-6 rounded-b-[40px] shadow-sm sticky top-0 z-30">
                 <div class="flex justify-between items-center mb-6">
                     <div><p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-0.5">Selamat Pagi</p><h2 class="text-2xl font-serif font-bold text-gray-900" id="greeting-name">Hai, Fritty 👋</h2></div>
-                    <!-- FOTO PROFIL PEREMPUAN BERHIJAB -->
                     <div onclick="goToScreen('screen-profil')" class="w-12 h-12 rounded-full p-0.5 bg-gradient-to-tr from-primary-500 to-secondary-400 cursor-pointer hover:scale-105 transition-transform"><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200" class="img-cover rounded-full border-2 border-white"></div>
                 </div>
-                <!-- Banner Kepatuhan -->
                 <div class="bg-gradient-to-br from-primary-700 to-primary-500 rounded-3xl p-6 text-white shadow-glow relative overflow-hidden group cursor-pointer" onclick="goToScreen('screen-pengingat')">
                     <div class="relative z-10">
                         <p class="text-xs font-bold text-primary-100 uppercase tracking-wide">Status Kepatuhan</p>
@@ -218,7 +759,6 @@
                     <i class="ph-fill ph-pill absolute -right-6 -bottom-8 text-[9rem] text-white opacity-10 rotate-12 group-hover:rotate-45 transition-transform duration-700"></i>
                 </div>
             </div>
-
             <div class="scroll-content px-6 pt-6">
                 <h3 class="text-sm font-bold text-gray-800 mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-secondary-500 rounded-full"></span> Menu Utama</h3>
                 <div class="grid grid-cols-3 gap-4 mb-8">
@@ -229,7 +769,6 @@
                     <button onclick="goToScreen('screen-berita')" class="menu-card group"><div class="w-12 h-12 rounded-2xl bg-cyan-50 text-cyan-600 flex items-center justify-center text-2xl mb-1"><i class="ph-fill ph-newspaper"></i></div><span class="text-xs font-bold text-gray-600 group-hover:text-cyan-600">Berita</span></button>
                     <button onclick="goToScreen('screen-lapor')" class="menu-card group"><div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-2xl mb-1"><i class="ph-fill ph-warning-circle"></i></div><span class="text-xs font-bold text-gray-600 group-hover:text-rose-600">Keluhan</span></button>
                 </div>
-
                 <!-- SOS -->
                 <div onclick="goToScreen('screen-sos')" class="bg-rose-50 border border-rose-100 p-5 rounded-3xl flex items-center gap-5 cursor-pointer mb-8 active:scale-95 transition-transform overflow-hidden relative">
                     <div class="absolute -right-6 -top-6 w-24 h-24 bg-rose-200 rounded-full blur-2xl opacity-50"></div>
@@ -242,7 +781,7 @@
         <!-- ================= DAFTAR RS (FULL FLOW) ================= -->
         <!-- Step 1: Cari -->
         <div id="screen-daftar-1" class="screen bg-gray-50">
-            <div class="glass-header px-6 pt-16 pb-4 sticky top-0 z-20 flex items-center gap-4"><button onclick="goToScreen('screen-home')" class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button><div class="flex-1"><h2 class="text-sm font-bold text-gray-900">Pilih Faskes</h2></div></div>
+            <div class="glass-header px-6 pt-14 pb-4 sticky top-0 z-20 flex items-center gap-4"><button onclick="goToScreen('screen-home')" class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button><div class="flex-1"><h2 class="text-sm font-bold text-gray-900">Pilih Faskes</h2></div></div>
             <div class="scroll-content px-6 pt-6 space-y-4">
                 <div onclick="selectRS('RS Hermina')" class="bg-white p-4 rounded-3xl shadow-sm flex gap-4 cursor-pointer border border-transparent hover:border-primary-500 transition-all group"><img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=200" class="w-20 h-20 rounded-2xl object-cover grayscale group-hover:grayscale-0 transition-all"><div><h4 class="font-bold text-gray-900 group-hover:text-primary-700">RS Hermina</h4><span class="text-[10px] bg-primary-50 text-primary-700 px-2 py-0.5 rounded-lg font-bold">1.2 KM</span><p class="text-xs text-gray-500 mt-2">Umum & Spesialis</p></div></div>
                 <div onclick="selectRS('RS Sardjito')" class="bg-white p-4 rounded-3xl shadow-sm flex gap-4 cursor-pointer border border-transparent hover:border-primary-500 transition-all group"><img src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=200" class="w-20 h-20 rounded-2xl object-cover grayscale group-hover:grayscale-0 transition-all"><div><h4 class="font-bold text-gray-900 group-hover:text-primary-700">RS Sardjito</h4><span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-lg font-bold">3.5 KM</span><p class="text-xs text-gray-500 mt-2">Rujukan Nasional</p></div></div>
@@ -250,12 +789,12 @@
         </div>
         <!-- Step 2: Metode -->
         <div id="screen-daftar-method" class="screen bg-white">
-            <div class="glass-header px-6 pt-16 pb-4 flex items-center gap-4"><button onclick="goToScreen('screen-daftar-1')" class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center"><i class="ph-bold ph-arrow-left"></i></button><h2 class="text-sm font-bold text-gray-900">Pilih Metode</h2></div>
+            <div class="glass-header px-6 pt-14 pb-4 flex items-center gap-4"><button onclick="goToScreen('screen-daftar-1')" class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center"><i class="ph-bold ph-arrow-left"></i></button><h2 class="text-sm font-bold text-gray-900">Pilih Metode</h2></div>
             <div class="scroll-content px-6 pt-6 space-y-4"><button onclick="goToBookingForm('Offline')" class="w-full p-6 rounded-3xl bg-primary-50 border border-primary-100 text-left hover:bg-primary-100 transition-all group"><div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-primary-600 mb-4 shadow-sm"><i class="ph-fill ph-buildings text-2xl"></i></div><h3 class="font-bold text-gray-900 text-lg">Kunjungan RS</h3><p class="text-xs text-gray-500 mt-1">Datang langsung ke lokasi.</p></button><button onclick="goToBookingForm('Online')" class="w-full p-6 rounded-3xl bg-white border border-gray-100 text-left shadow-sm hover:border-primary-500 transition-all"><div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mb-4 text-2xl"><i class="ph-fill ph-video-camera"></i></div><h3 class="font-bold text-gray-900 text-lg">Telemedicine</h3><p class="text-xs text-gray-500 mt-1">Video call dokter.</p></button></div>
         </div>
         <!-- Step 3: Form -->
         <div id="screen-daftar-form" class="screen bg-gray-50">
-            <div class="glass-header px-6 pt-16 pb-4 flex items-center gap-4 sticky top-0 z-20"><button onclick="goToScreen('screen-daftar-method')" class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center"><i class="ph-bold ph-arrow-left"></i></button><h2 class="text-sm font-bold text-gray-900">Detail & Jadwal</h2></div>
+            <div class="glass-header px-6 pt-14 pb-4 flex items-center gap-4 sticky top-0 z-20"><button onclick="goToScreen('screen-daftar-method')" class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center"><i class="ph-bold ph-arrow-left"></i></button><h2 class="text-sm font-bold text-gray-900">Detail & Jadwal</h2></div>
             <div class="scroll-content px-6 pt-6">
                 <div class="bg-white p-5 rounded-3xl shadow-sm mb-8"><label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 block ml-1">Tanggal</label><div class="flex items-center bg-gray-50 rounded-2xl px-4 border border-gray-100"><i class="ph-fill ph-calendar-blank text-gray-400 text-xl"></i><input type="date" id="booking-date" class="w-full p-4 bg-transparent font-bold text-gray-800 outline-none text-sm"></div></div>
                 <h3 class="font-bold text-gray-800 mb-4 text-sm ml-1">Pilih Poliklinik</h3>
@@ -272,7 +811,7 @@
         </div>
         <!-- Step 4: Tiket -->
         <div id="screen-tiket" class="screen bg-gray-50">
-            <div class="px-6 pt-16 pb-4"><button onclick="goToScreen('screen-home')" class="text-xs font-bold text-gray-500 flex items-center gap-1 hover:text-primary-600"><i class="ph-bold ph-caret-left"></i> Home</button></div>
+            <div class="px-6 pt-14 pb-4"><button onclick="goToScreen('screen-home')" class="text-xs font-bold text-gray-500 flex items-center gap-1 hover:text-primary-600"><i class="ph-bold ph-caret-left"></i> Home</button></div>
             <div class="scroll-content px-6 text-center pb-24">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6">Booking Sukses!</h2>
                 <div class="w-full bg-white rounded-3xl shadow-card overflow-hidden relative mb-6">
@@ -286,7 +825,7 @@
 
         <!-- ================= PEMBAYARAN LENGKAP ================= -->
         <div id="screen-payment" class="screen bg-white">
-            <div class="glass-header px-6 pt-16 pb-4 flex gap-4 sticky top-0 z-20"><button onclick="goToScreen('screen-riwayat')" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button><h2 class="font-bold mt-1.5">Metode Pembayaran</h2></div>
+            <div class="glass-header px-6 pt-14 pb-4 flex gap-4 sticky top-0 z-20"><button onclick="goToScreen('screen-riwayat')" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button><h2 class="font-bold mt-1.5">Metode Pembayaran</h2></div>
             <div class="scroll-content px-6 pt-6">
                 <div class="bg-gray-900 text-white p-6 rounded-3xl mb-8 relative overflow-hidden shadow-xl"><p class="text-xs text-gray-400 uppercase tracking-wider mb-1">Total Tagihan</p><h1 class="text-3xl font-extrabold mb-1">Rp 125.000</h1><p class="text-xs text-gray-400">Order ID: #INV-241220</p><div class="absolute right-0 top-0 w-32 h-32 bg-white/5 rounded-full -mr-10 -mt-10 blur-3xl"></div></div>
                 <h3 class="font-bold text-gray-800 mb-4 text-sm">Pilih Metode</h3>
@@ -300,28 +839,28 @@
         </div>
         <div id="modal-payment-success" class="fixed inset-0 z-50 bg-white hidden flex-col items-center justify-center p-8 text-center animate-fade-in"><div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6 animate-float"><i class="ph-fill ph-check-circle text-6xl text-green-500"></i></div><h2 class="text-2xl font-bold text-gray-900 mb-2">Pembayaran Berhasil!</h2><p class="text-gray-500 text-sm mb-8">Transaksi Anda telah diverifikasi.</p><button onclick="goToScreen('screen-home'); document.getElementById('modal-payment-success').classList.add('hidden')" class="w-full py-3 bg-gray-900 text-white rounded-xl font-bold hover:bg-gray-800">Kembali ke Home</button></div>
 
-        <!-- ================= PROFIL (PENGEMBANG & HIJAB) ================= -->
+        <!-- ================= PROFIL (PENGEMBANG) ================= -->
         <div id="screen-profil" class="screen bg-gray-50">
             <div class="relative h-48 bg-primary-700"><div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div><div class="absolute -bottom-12 left-0 right-0 flex justify-center"><div class="w-28 h-28 rounded-full border-4 border-white bg-white overflow-hidden shadow-lg"><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300" class="img-cover"></div></div></div>
             <div class="scroll-content px-6 pt-16 text-center">
                 <h2 class="text-2xl font-bold text-gray-900">Fritty</h2>
                 <p class="text-sm text-gray-500">Pasien Umum • Bergabung 2024</p>
                 <div class="mt-8 space-y-4 text-left">
-                    <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100"><h3 class="text-xs font-bold text-gray-400 uppercase mb-4 tracking-wider">Informasi Pribadi</h3><div class="space-y-4 text-sm"><div class="flex items-center gap-4"><div class="w-8 h-8 rounded-full bg-primary-50 flex items-center justify-center text-primary-600"><i class="ph-fill ph-envelope"></i></div><span class="font-medium text-gray-700">fritty@email.com</span></div><div class="flex items-center gap-4"><div class="w-8 h-8 rounded-full bg-primary-50 flex items-center justify-center text-primary-600"><i class="ph-fill ph-phone"></i></div><span class="font-medium text-gray-700">+62 812-3456-7890</span></div></div><hr class="my-4 border-gray-100"><button class="w-full text-left flex justify-between items-center text-sm font-medium text-gray-700 hover:text-brand-600"><span>Edit Profil</span><i class="ph-bold ph-caret-right"></i></button></div>
+                    <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100"><h3 class="text-xs font-bold text-gray-400 uppercase mb-4 tracking-wider">Informasi Pribadi</h3><div class="space-y-4 text-sm"><div class="flex items-center gap-4"><div class="w-8 h-8 rounded-full bg-primary-50 flex items-center justify-center text-primary-600"><i class="ph-fill ph-envelope"></i></div><span class="font-medium text-gray-700">fritty@email.com</span></div><div class="flex items-center gap-4"><div class="w-8 h-8 rounded-full bg-primary-50 flex items-center justify-center text-primary-600"><i class="ph-fill ph-phone"></i></div><span class="font-medium text-gray-700">+62 812-3456-7890</span></div></div><hr class="my-4 border-gray-100"><button class="w-full text-left flex justify-between items-center text-sm font-medium text-gray-700 hover:text-primary-600"><span>Edit Profil</span><i class="ph-bold ph-caret-right"></i></button></div>
                     <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100"><h3 class="text-xs font-bold text-gray-400 uppercase mb-4 tracking-wider">Info Pengembang</h3><ul class="text-[11px] text-gray-600 space-y-2 font-mono"><li>1. Siti Fahdia Rahmatullah A. (2100023196)</li><li>2. Adhwa Rizqy Hanifah (2200023196)</li><li>3. Rahma Amelia Izzaty (2200023197)</li><li>4. Sitta Istiqomah Said (2200023199)</li><li>5. Ridha Rahmatul Azizah (2200023201)</li></ul></div>
                     <button onclick="location.reload()" class="w-full p-4 bg-rose-50 text-rose-600 font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-rose-100 transition-colors"><i class="ph-bold ph-sign-out"></i> Keluar Aplikasi</button>
                 </div>
             </div>
         </div>
 
-        <!-- ================= BERITA & ARTIKEL (SUPER DETAIL) ================= -->
+        <!-- ================= BERITA & ARTIKEL ================= -->
         <div id="screen-berita" class="screen bg-white">
-            <div class="glass-header px-6 pt-16 pb-4 sticky top-0 z-20"><h2 class="font-bold text-gray-900 text-lg">Wawasan Kesehatan</h2></div>
+            <div class="glass-header px-6 pt-14 pb-4 sticky top-0 z-20"><h2 class="font-bold text-gray-900 text-lg">Wawasan Kesehatan</h2></div>
             <div class="scroll-content px-6 pt-6 space-y-8">
                 <!-- Highlight -->
                 <div class="cursor-pointer group" onclick="openArticle('dbd')">
                     <div class="h-64 rounded-[32px] overflow-hidden relative mb-4 shadow-lg">
-                        <img src="https://images.unsplash.com/photo-1551884170-09fb70a3a2ed?w=800" class="img-cover transition-transform duration-700 group-hover:scale-110">
+                        <img src="https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=800" class="img-cover transition-transform duration-700 group-hover:scale-110">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
                             <span class="bg-red-600 text-white text-[10px] font-bold px-3 py-1 rounded-full w-fit mb-2">WABAH</span>
                             <h3 class="font-serif text-2xl font-bold text-white leading-tight">Waspada Lonjakan DBD di Musim Hujan</h3>
@@ -331,19 +870,19 @@
                 <hr class="border-gray-100">
                 <!-- List -->
                 <div class="flex gap-4 cursor-pointer group" onclick="openArticle('gula')">
-                    <div class="w-28 h-28 rounded-2xl overflow-hidden flex-shrink-0"><img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" class="img-cover group-hover:scale-110 transition-transform"></div>
-                    <div class="flex-1 flex flex-col justify-center"><span class="text-[10px] font-bold text-secondary-600 uppercase mb-1">Diabetes</span><h4 class="font-serif font-bold text-gray-900 leading-snug mb-2">5 Tanda Tubuh Kelebihan Gula yang Sering Diabaikan</h4><p class="text-xs text-gray-500 line-clamp-2">Sering haus dan mudah lelah? Waspada gejala awal.</p></div>
+                    <div class="w-28 h-28 rounded-2xl overflow-hidden flex-shrink-0"><img src="https://images.unsplash.com/photo-1505576399279-565b52d4ac71?w=300" class="img-cover group-hover:scale-110 transition-transform"></div>
+                    <div class="flex-1 flex flex-col justify-center"><span class="text-[10px] font-bold text-secondary-600 uppercase mb-1">Diabetes</span><h4 class="font-serif font-bold text-gray-900 leading-snug mb-2">5 Tanda Tubuh Kelebihan Gula</h4><p class="text-xs text-gray-500 line-clamp-2">Sering haus dan mudah lelah? Waspada gejala awal.</p></div>
                 </div>
                 <div class="flex gap-4 cursor-pointer group" onclick="openArticle('tidur')">
                     <div class="w-28 h-28 rounded-2xl overflow-hidden flex-shrink-0"><img src="https://images.unsplash.com/photo-1544367563-12123d8965cd?w=300" class="img-cover group-hover:scale-110 transition-transform"></div>
-                    <div class="flex-1 flex flex-col justify-center"><span class="text-[10px] font-bold text-blue-500 uppercase mb-1">Mental Health</span><h4 class="font-serif font-bold text-gray-900 leading-snug mb-2">Susah Tidur? Coba Teknik Pernapasan 4-7-8</h4><p class="text-xs text-gray-500 line-clamp-2">Teknik relaksasi ampuh untuk mengatasi insomnia.</p></div>
+                    <div class="flex-1 flex flex-col justify-center"><span class="text-[10px] font-bold text-blue-500 uppercase mb-1">Mental Health</span><h4 class="font-serif font-bold text-gray-900 leading-snug mb-2">Susah Tidur? Coba Teknik 4-7-8</h4><p class="text-xs text-gray-500 line-clamp-2">Teknik relaksasi ampuh untuk mengatasi insomnia.</p></div>
                 </div>
             </div>
         </div>
 
         <!-- MODAL ARTIKEL (RICH CONTENT) -->
         <div id="modal-article" class="fixed inset-0 z-[60] bg-white hidden flex-col animate-[fadeIn_0.3s]">
-            <div class="px-6 pt-16 pb-4 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur z-10">
+            <div class="px-6 pt-14 pb-4 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur z-10">
                 <button onclick="document.getElementById('modal-article').classList.add('hidden')" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors"><i class="ph-bold ph-arrow-left"></i></button>
                 <div class="flex gap-4 text-xl text-gray-600"><i class="ph-bold ph-bookmark-simple"></i><i class="ph-bold ph-share-network"></i></div>
             </div>
@@ -365,25 +904,35 @@
         </div>
 
         <!-- ================= OTHER SCREENS ================= -->
-        <div id="screen-pengingat" class="screen bg-gray-50"><div class="glass-header px-6 pt-16 pb-4 flex justify-between items-center sticky top-0 z-20"><div class="flex gap-4 items-center"><button onclick="goToScreen('screen-home')" class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button><h2 class="font-bold text-gray-900">Jadwal Obat</h2></div><button onclick="document.getElementById('modal-add-obat').classList.remove('hidden'); document.getElementById('modal-add-obat').classList.add('flex')" class="bg-primary-600 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:bg-primary-700 transition-colors"><i class="ph-bold ph-plus"></i></button></div><div class="scroll-content px-6 pt-6 relative" id="list-obat-container"><div class="timeline-line"></div></div></div>
+        <div id="screen-pengingat" class="screen bg-gray-50"><div class="glass-header px-6 pt-14 pb-4 flex justify-between items-center sticky top-0 z-20"><div class="flex gap-4 items-center"><button onclick="goToScreen('screen-home')" class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button><h2 class="font-bold text-gray-900">Jadwal Obat</h2></div><button onclick="document.getElementById('modal-add-obat').classList.remove('hidden'); document.getElementById('modal-add-obat').classList.add('flex')" class="bg-primary-600 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:bg-primary-700 transition-colors"><i class="ph-bold ph-plus"></i></button></div><div class="scroll-content px-6 pt-6 relative" id="list-obat-container"><div class="timeline-line"></div></div></div>
         <div id="modal-add-obat" class="fixed inset-0 z-50 bg-black/50 hidden items-end sm:items-center justify-center p-4 backdrop-blur-sm"><div class="bg-white w-full max-w-sm rounded-3xl p-6 relative animate-slide-up"><h3 class="text-lg font-bold text-gray-900 mb-4">Tambah Jadwal</h3><input type="text" id="new-obat-name" placeholder="Nama Obat" class="w-full p-4 bg-gray-50 rounded-xl mb-3 text-sm outline-none border border-transparent focus:bg-white focus:border-primary-500 transition-all"><input type="time" id="new-obat-time" class="w-full p-4 bg-gray-50 rounded-xl mb-6 text-sm outline-none border border-transparent focus:bg-white focus:border-primary-500 transition-all"><button onclick="addNewObat()" class="w-full py-4 bg-primary-600 text-white rounded-xl font-bold hover:bg-primary-700">Simpan</button><button onclick="document.getElementById('modal-add-obat').classList.add('hidden')" class="w-full py-4 mt-2 text-gray-500 font-bold hover:text-gray-700">Batal</button></div></div>
-        <div id="screen-riwayat" class="screen bg-gray-50"><div class="glass-header px-6 pt-16 pb-4 flex gap-4 sticky top-0 z-20"><button onclick="goToScreen('screen-home')" class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button><h2 class="font-bold mt-1">Riwayat Medis</h2></div><div class="scroll-content px-6 pt-6 space-y-4"><div onclick="openResep()" class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 cursor-pointer hover:border-primary-500 transition-all"><div class="flex justify-between items-center mb-2"><span class="text-xs font-bold text-gray-400">20 Des 2024</span><span class="text-[10px] bg-rose-50 text-rose-600 px-3 py-1 rounded-full font-bold">TAGIHAN</span></div><h4 class="font-bold text-gray-900 text-lg">Radang Tenggorokan</h4><p class="text-xs text-gray-500 mt-1">Poli Umum • Tagihan: Rp 125.000</p></div></div></div>
+        <div id="screen-riwayat" class="screen bg-gray-50"><div class="glass-header px-6 pt-14 pb-4 flex gap-4 sticky top-0 z-20"><button onclick="goToScreen('screen-home')" class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button><h2 class="font-bold mt-1">Riwayat Medis</h2></div><div class="scroll-content px-6 pt-6 space-y-4"><div onclick="openResep()" class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 cursor-pointer hover:border-primary-500 transition-all"><div class="flex justify-between items-center mb-2"><span class="text-xs font-bold text-gray-400">20 Des 2024</span><span class="text-[10px] bg-rose-50 text-rose-600 px-3 py-1 rounded-full font-bold">TAGIHAN</span></div><h4 class="font-bold text-gray-900 text-lg">Radang Tenggorokan</h4><p class="text-xs text-gray-500 mt-1">Poli Umum • Tagihan: Rp 125.000</p></div></div></div>
         <div id="modal-resep" class="fixed inset-0 z-50 bg-black/60 hidden items-center justify-center p-4 backdrop-blur-sm"><div class="resep-paper w-full max-w-sm p-8 bg-[#fffbf0] relative shadow-2xl transform rotate-1 border border-gray-300"><button onclick="document.getElementById('modal-resep').classList.add('hidden')" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center"><i class="ph-bold ph-x"></i></button><div class="text-center border-b-2 border-black pb-4 mb-6"><h3 class="font-bold text-xl font-serif tracking-wide">RS HERMINA</h3><p class="text-[10px] uppercase tracking-widest mt-1">Yogyakarta</p></div><div class="font-mono text-sm text-gray-800 mb-8 space-y-4"><div class="border-b border-dashed border-gray-300 pb-2"><p>R/ Amoxicillin 500mg No.XV</p><p class="pl-6 italic text-gray-500">S 3 dd 1 (Habiskan)</p></div><div class="border-b border-dashed border-gray-300 pb-2"><p>R/ Paracetamol 500mg No.X</p><p class="pl-6 italic text-gray-500">S 3 dd 1 prn (Demam)</p></div></div><button onclick="goToScreen('screen-payment'); document.getElementById('modal-resep').classList.add('hidden');" class="w-full py-3.5 bg-primary-700 text-white rounded-xl font-bold shadow-lg hover:bg-primary-800 transition-colors">Bayar Rp 125.000</button></div></div>
-        <div id="screen-bugar" class="screen bg-white"><div class="glass-header px-6 pt-16 pb-4 flex gap-4"><button onclick="goToScreen('screen-home')" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button><h2 class="font-bold mt-1">Bugar</h2></div><div class="scroll-content px-6 pt-6 text-center"><div class="bg-gradient-to-br from-emerald-400 to-emerald-600 p-8 rounded-3xl text-white shadow-lg mb-8"><i class="ph-fill ph-sneaker-move text-4xl mb-2 opacity-80"></i><h1 class="text-6xl font-bold tracking-tight">4,281</h1><p class="text-emerald-100 text-xs font-bold uppercase tracking-widest mt-2">Langkah Hari Ini</p></div><div class="bg-white border border-gray-100 p-4 rounded-3xl shadow-sm"><canvas id="bugarChart" height="200"></canvas></div></div></div>
-        <div id="screen-lapor" class="screen bg-white"><div class="glass-header px-6 pt-16 pb-4 flex gap-4"><button onclick="goToScreen('screen-home')" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button><h2 class="font-bold mt-1">Lapor Keluhan</h2></div><div class="scroll-content px-6 pt-6"><p class="text-gray-500 text-sm mb-4">Apa yang Anda rasakan setelah minum obat?</p><div class="space-y-3 mb-6"><label class="flex items-center gap-3 p-4 border border-gray-100 rounded-2xl hover:border-primary-500 cursor-pointer transition-all"><input type="checkbox" class="w-5 h-5 accent-primary-600 rounded"><span class="text-sm font-bold text-gray-700">Pusing / Sakit Kepala</span></label><label class="flex items-center gap-3 p-4 border border-gray-100 rounded-2xl hover:border-primary-500 cursor-pointer transition-all"><input type="checkbox" class="w-5 h-5 accent-primary-600 rounded"><span class="text-sm font-bold text-gray-700">Mual / Muntah</span></label></div><textarea class="w-full bg-gray-50 p-4 rounded-2xl text-sm h-32 outline-none border border-transparent focus:bg-white focus:border-primary-500 transition-all" placeholder="Ceritakan detail keluhan..."></textarea><button onclick="alert('Terkirim!'); goToScreen('screen-home')" class="w-full mt-6 py-4 bg-rose-500 text-white rounded-2xl font-bold shadow-lg hover:bg-rose-600 transition-all">Kirim Laporan</button></div></div>
-        <div id="screen-faq" class="screen bg-white"><div class="glass-header px-6 pt-16 pb-4 sticky top-0 z-20"><h2 class="font-bold text-gray-900 text-lg">Pusat Bantuan</h2></div><div class="scroll-content px-6 pt-6"><div class="relative mb-6"><i class="ph-bold ph-magnifying-glass absolute left-4 top-4 text-gray-400"></i><input type="text" placeholder="Cari masalah Anda..." class="w-full pl-12 pr-4 py-3.5 bg-gray-50 rounded-2xl border-none outline-none text-sm focus:bg-white focus:ring-2 focus:ring-primary-500 transition-all"></div><div class="space-y-3"><details class="group bg-white border border-gray-100 rounded-2xl open:border-primary-200 open:bg-primary-50/50 transition-all"><summary class="flex justify-between items-center p-5 cursor-pointer list-none"><span class="text-sm font-bold text-gray-700">Lupa Password Akun?</span><i class="ph-bold ph-caret-down text-gray-400 group-open:rotate-180 transition-transform"></i></summary><div class="px-5 pb-5 text-xs text-gray-600 leading-relaxed">Klik tombol "Lupa Password" di halaman login.</div></details><details class="group bg-white border border-gray-100 rounded-2xl open:border-primary-200 open:bg-primary-50/50 transition-all"><summary class="flex justify-between items-center p-5 cursor-pointer list-none"><span class="text-sm font-bold text-gray-700">Cara Batalkan Janji?</span><i class="ph-bold ph-caret-down text-gray-400 group-open:rotate-180 transition-transform"></i></summary><div class="px-5 pb-5 text-xs text-gray-600 leading-relaxed">Buka menu Riwayat, pilih jadwal, tekan "Batalkan".</div></details></div><div class="mt-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-5 text-white flex items-center gap-4 shadow-lg"><div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur"><i class="ph-fill ph-chats-circle text-2xl"></i></div><div class="flex-1"><h4 class="font-bold text-sm">Butuh Bantuan Lain?</h4><p class="text-xs text-blue-100">Chat Customer Service.</p></div><button onclick="alert('Membuka Chat...')" class="bg-white text-blue-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-gray-100">Chat</button></div></div></div>
+        <div id="screen-bugar" class="screen bg-white"><div class="glass-header px-6 pt-14 pb-4 flex gap-4"><button onclick="goToScreen('screen-home')" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button><h2 class="font-bold mt-1">Bugar</h2></div><div class="scroll-content px-6 pt-6 text-center"><div class="bg-gradient-to-br from-emerald-400 to-emerald-600 p-8 rounded-3xl text-white shadow-lg mb-8"><i class="ph-fill ph-sneaker-move text-4xl mb-2 opacity-80"></i><h1 class="text-6xl font-bold tracking-tight">4,281</h1><p class="text-emerald-100 text-xs font-bold uppercase tracking-widest mt-2">Langkah Hari Ini</p></div><div class="bg-white border border-gray-100 p-4 rounded-3xl shadow-sm"><canvas id="bugarChart" height="200"></canvas></div></div></div>
+        <div id="screen-lapor" class="screen bg-white"><div class="glass-header px-6 pt-14 pb-4 flex gap-4"><button onclick="goToScreen('screen-home')" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50"><i class="ph-bold ph-arrow-left"></i></button><h2 class="font-bold mt-1">Lapor Keluhan</h2></div><div class="scroll-content px-6 pt-6"><p class="text-gray-500 text-sm mb-4">Apa yang Anda rasakan setelah minum obat?</p><div class="space-y-3 mb-6"><label class="flex items-center gap-3 p-4 border border-gray-100 rounded-2xl hover:border-primary-500 cursor-pointer transition-all"><input type="checkbox" class="w-5 h-5 accent-primary-600 rounded"><span class="text-sm font-bold text-gray-700">Pusing / Sakit Kepala</span></label><label class="flex items-center gap-3 p-4 border border-gray-100 rounded-2xl hover:border-primary-500 cursor-pointer transition-all"><input type="checkbox" class="w-5 h-5 accent-primary-600 rounded"><span class="text-sm font-bold text-gray-700">Mual / Muntah</span></label></div><textarea class="w-full bg-gray-50 p-4 rounded-2xl text-sm h-32 outline-none border border-transparent focus:bg-white focus:border-primary-500 transition-all" placeholder="Ceritakan detail keluhan..."></textarea><button onclick="alert('Terkirim!'); goToScreen('screen-home')" class="w-full mt-6 py-4 bg-rose-500 text-white rounded-2xl font-bold shadow-lg hover:bg-rose-600 transition-all">Kirim Laporan</button></div></div>
+        <div id="screen-faq" class="screen bg-white"><div class="glass-header px-6 pt-14 pb-4 sticky top-0 z-20"><h2 class="font-bold text-gray-900 text-lg">Pusat Bantuan</h2></div><div class="scroll-content px-6 pt-6"><div class="relative mb-6"><i class="ph-bold ph-magnifying-glass absolute left-4 top-4 text-gray-400"></i><input type="text" placeholder="Cari masalah Anda..." class="w-full pl-12 pr-4 py-3.5 bg-gray-50 rounded-2xl border-none outline-none text-sm focus:bg-white focus:ring-2 focus:ring-primary-500 transition-all"></div><div class="space-y-3"><details class="group bg-white border border-gray-100 rounded-2xl open:border-primary-200 open:bg-primary-50/50 transition-all"><summary class="flex justify-between items-center p-5 cursor-pointer list-none"><span class="text-sm font-bold text-gray-700">Lupa Password Akun?</span><i class="ph-bold ph-caret-down text-gray-400 group-open:rotate-180 transition-transform"></i></summary><div class="px-5 pb-5 text-xs text-gray-600 leading-relaxed">Klik tombol "Lupa Password" di halaman login.</div></details><details class="group bg-white border border-gray-100 rounded-2xl open:border-primary-200 open:bg-primary-50/50 transition-all"><summary class="flex justify-between items-center p-5 cursor-pointer list-none"><span class="text-sm font-bold text-gray-700">Cara Batalkan Janji?</span><i class="ph-bold ph-caret-down text-gray-400 group-open:rotate-180 transition-transform"></i></summary><div class="px-5 pb-5 text-xs text-gray-600 leading-relaxed">Buka menu Riwayat, pilih jadwal, tekan "Batalkan".</div></details></div><div class="mt-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-5 text-white flex items-center gap-4 shadow-lg"><div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur"><i class="ph-fill ph-chats-circle text-2xl"></i></div><div class="flex-1"><h4 class="font-bold text-sm">Butuh Bantuan Lain?</h4><p class="text-xs text-blue-100">Chat Customer Service.</p></div><button onclick="alert('Membuka Chat...')" class="bg-white text-blue-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-gray-100">Chat</button></div></div></div>
         <div id="screen-sos" class="screen bg-rose-600 items-center justify-center text-center px-8 relative overflow-hidden"><div class="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.2)_0%,transparent_70%)] animate-pulse"></div><div class="relative z-10"><div class="w-32 h-32 bg-white rounded-full flex items-center justify-center text-rose-600 text-6xl shadow-2xl mx-auto mb-8 animate-bounce"><i class="ph-fill ph-phone-call"></i></div><h1 class="text-4xl font-extrabold text-white mb-2">Memanggil 119...</h1><p class="text-rose-100 mb-10">Lokasi Anda sedang dikirim.</p><button onclick="goToScreen('screen-home')" class="px-10 py-4 bg-rose-800 text-white rounded-2xl font-bold border border-rose-400 hover:bg-rose-900 transition-all">Batalkan</button></div></div>
 
         <!-- KARTU BPJS MODAL -->
         <div id="modal-bpjs" class="fixed inset-0 z-[60] bg-black/80 hidden flex-col items-center justify-center p-6 backdrop-blur-sm" onclick="this.classList.add('hidden')"><div class="w-full max-w-xs bg-gradient-to-br from-green-600 to-teal-800 rounded-2xl p-6 text-white shadow-2xl relative overflow-hidden transform hover:scale-105 transition-transform" onclick="event.stopPropagation()"><div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div><div class="relative z-10 flex justify-between mb-8"><div class="flex gap-2 items-center"><i class="ph-fill ph-first-aid-kit text-2xl"></i><span class="font-bold text-sm tracking-wider">BPJS</span></div><span class="bg-white/20 px-2 py-1 rounded text-[10px] font-bold">AKTIF</span></div><p class="relative z-10 text-center text-lg tracking-[0.2em] font-mono mb-8">0001 8293 8271</p><div class="relative z-10 flex justify-between items-end"><div><p class="text-[10px] text-green-100 uppercase">Nama Peserta</p><p class="font-bold text-lg">FRITTY</p></div><div class="bg-white p-1 rounded"><i class="ph-fill ph-qr-code text-3xl text-black"></i></div></div></div><p class="text-white text-xs mt-4">Ketuk layar untuk menutup</p></div>
 
-        <!-- BOTTOM NAV -->
+        <!-- BOTTOM NAV PASIEN -->
         <div id="bottom-nav" class="absolute bottom-0 w-full bg-white/95 backdrop-blur-xl border-t border-gray-100 flex justify-around items-end pb-8 pt-2 z-50 rounded-b-[44px] hidden transition-all">
             <button onclick="goToScreen('screen-home')" class="nav-btn active"><i class="ph-fill ph-house text-2xl"></i><span class="text-[10px] font-bold">Home</span></button>
             <button onclick="goToScreen('screen-berita')" class="nav-btn"><i class="ph-fill ph-newspaper text-2xl"></i><span class="text-[10px] font-bold">Berita</span></button>
             <button onclick="document.getElementById('modal-bpjs').classList.remove('hidden'); document.getElementById('modal-bpjs').classList.add('flex')" class="nav-btn -mt-8"><div class="w-16 h-16 bg-primary-600 rounded-full flex items-center justify-center text-white shadow-floating border-4 border-white transform hover:scale-110 transition-transform"><i class="ph-fill ph-qr-code text-2xl"></i></div></button>
             <button onclick="goToScreen('screen-faq')" class="nav-btn"><i class="ph-fill ph-question text-2xl"></i><span class="text-[10px] font-bold">FAQ</span></button>
             <button onclick="goToScreen('screen-profil')" class="nav-btn"><i class="ph-fill ph-user text-2xl"></i><span class="text-[10px] font-bold">Profil</span></button>
+        </div>
+
+        <!-- BOTTOM NAV NAKES (NEW) -->
+        <div id="bottom-nav-nakes" class="absolute bottom-0 w-full bg-white/95 backdrop-blur-xl border-t border-gray-100 flex justify-around items-end pb-8 pt-2 z-50 rounded-b-[44px] hidden transition-all">
+            <button onclick="goToScreen('screen-home-nakes')" class="nav-btn active-nakes"><i class="ph-fill ph-grid-four text-2xl"></i><span class="text-[10px] font-bold">Home</span></button>
+            <button onclick="goToScreen('screen-nakes-list-pasien')" class="nav-btn"><i class="ph-fill ph-chart-line-up text-2xl"></i><span class="text-[10px] font-bold">Rekam</span></button>
+            <!-- Center Action Button Nakes - OPENS ID CARD -->
+            <button onclick="openIDCard()" class="nav-btn -mt-8"><div class="w-16 h-16 bg-nakes-600 rounded-full flex items-center justify-center text-white shadow-floating border-4 border-white transform hover:scale-110 transition-transform"><i class="ph-fill ph-scan text-2xl"></i></div></button>
+            <button onclick="goToScreen('screen-nakes-forum')" class="nav-btn"><i class="ph-fill ph-users-three text-2xl"></i><span class="text-[10px] font-bold">Forum</span></button>
+            <button onclick="goToScreen('screen-nakes-profil')" class="nav-btn"><i class="ph-fill ph-user-circle text-2xl"></i><span class="text-[10px] font-bold">Akun</span></button>
         </div>
 
     </div>
@@ -393,22 +942,627 @@
         let medications = [{ id: 1, name: 'Amoxicillin 500mg', time: '08:00', note: 'Sesudah makan', taken: false }];
         const state = { booking: { rs: '', doc: '' } };
 
+        // MOCK DATA PASIEN LENGKAP (FOR NAKES)
+        const patientsData = {
+            'P001': {
+                id: 'P001', name: 'Fritty', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200',
+                age: '24 Th', body: '55kg / 160cm', allergy: 'Udang', diagnosis: 'TB Paru', since: '2 Bulan',
+                compliance: 85,
+                history: [
+                    { date: '20 Des 2024', title: 'Kontrol Rutin', desc: 'Perbaikan batuk, BB naik 1kg.' },
+                    { date: '10 Nov 2024', title: 'Awal Diagnosa', desc: 'Batuk > 2 minggu, BTA (+).' }
+                ],
+                sideEffects: [
+                    { type: 'Ringan', desc: 'Mual ringan setelah minum Rifampicin', date: 'Kemarin', solved: true },
+                    { type: 'Info', desc: 'Urin berwarna merah (normal efek obat)', date: 'Hari ini', solved: true }
+                ],
+                meds: [
+                    { name: 'Rifampicin 450mg', dose: '1x1 Pagi', status: 'Rutin' },
+                    { name: 'Isoniazid 300mg', dose: '1x1 Malam', status: 'Rutin' },
+                    { name: 'Vit B6 10mg', dose: '1x1 Pagi', status: 'Suplemen' }
+                ],
+                rxData: [
+                    { drug: 'Rifampicin 450mg', qty: 'No. XXX', signa: 'S 1 dd 1 (Pagi)' },
+                    { drug: 'Isoniazid 300mg', qty: 'No. XXX', signa: 'S 1 dd 1 (Malam)' },
+                    { drug: 'Vit B6 10mg', qty: 'No. XXX', signa: 'S 1 dd 1' }
+                ],
+                missed: [
+                    { drug: 'Rifampicin', date: 'Kemarin, 08:00', note: 'Lupa bawa obat saat kerja' }
+                ],
+                chartData: [100, 100, 80, 100, 60, 100, 100],
+                interaction: 'Tidak ada interaksi serius.'
+            },
+            'P002': {
+                id: 'P002', name: 'Tn. Budi', img: 'https://images.unsplash.com/photo-1566492031773-4fbc7dddf5af?w=200',
+                age: '58 Th', body: '78kg / 172cm', allergy: 'Penicillin', diagnosis: 'Hipertensi + Asma', since: '3 Tahun',
+                compliance: 60,
+                history: [
+                    { date: '18 Des 2024', title: 'Keluhan Sesak', desc: 'Pasien mengeluh sesak nafas setelah minum obat pagi.' },
+                    { date: '01 Des 2024', title: 'Cek Tensi', desc: '150/90 mmHg. Dosis dinaikkan.' }
+                ],
+                sideEffects: [
+                    { type: 'Serius', desc: 'Sesak napas meningkat (Dugaan bronkospasme)', date: 'Hari ini', solved: false }
+                ],
+                meds: [
+                    { name: 'Bisoprolol 5mg', dose: '1x1 Pagi', status: 'Evaluasi' },
+                    { name: 'Amlodipine 10mg', dose: '1x1 Malam', status: 'Rutin' },
+                    { name: 'Salbutamol Inhaler', dose: 'PRN', status: 'Jika Perlu' }
+                ],
+                rxData: [
+                    { drug: 'Bisoprolol 5mg', qty: 'No. XXX', signa: 'S 1 dd 1' },
+                    { drug: 'Amlodipine 10mg', qty: 'No. XXX', signa: 'S 1 dd 1 (Malam)' }
+                ],
+                missed: [
+                    { drug: 'Bisoprolol', date: 'Hari ini, 07:00', note: 'Takut sesak' },
+                    { drug: 'Amlodipine', date: 'Kemarin, 20:00', note: 'Ketiduran' }
+                ],
+                chartData: [100, 50, 50, 100, 0, 50, 50],
+                interaction: 'PERINGATAN: Beta-blocker non-selektif dapat memicu bronkospasme pada pasien Asma.'
+            },
+            'P003': {
+                id: 'P003', name: 'Ny. Sitta', img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200',
+                age: '62 Th', body: '65kg / 158cm', allergy: 'Tidak Ada', diagnosis: 'AF + Stroke Prev', since: '1 Tahun',
+                compliance: 95,
+                history: [
+                    { date: '15 Des 2024', title: 'Cek INR', desc: 'INR tidak stabil (3.5). Evaluasi diet.' }
+                ],
+                sideEffects: [
+                    { type: 'Serius', desc: 'Mimisan ringan pagi hari', date: 'Hari ini', solved: false }
+                ],
+                meds: [
+                    { name: 'Warfarin 2mg', dose: '1x1 Malam', status: 'Pantau Ketat' },
+                    { name: 'Suplemen Bawang Putih', dose: '2x1', status: 'STOP' }
+                ],
+                rxData: [
+                    { drug: 'Warfarin 2mg', qty: 'No. XV', signa: 'S 1 dd 1 (Malam)' }
+                ],
+                missed: [],
+                chartData: [100, 100, 100, 100, 100, 100, 100],
+                interaction: 'BAHAYA: Bawang putih meningkatkan efek Warfarin -> Risiko Perdarahan.'
+            },
+            'P004': {
+                id: 'P004', name: 'An. Rino', img: 'https://images.unsplash.com/photo-1540479859555-17af45c78602?w=200',
+                age: '8 Th', body: '24kg / 120cm', allergy: 'Debu', diagnosis: 'ISPA', since: '3 Hari',
+                compliance: 100,
+                history: [
+                    { date: '21 Des 2024', title: 'Demam Tinggi', desc: 'Suhu 39C, batuk pilek.' }
+                ],
+                sideEffects: [],
+                meds: [
+                    { name: 'Paracetamol Syr', dose: '3x1 Cth', status: 'Rutin' },
+                    { name: 'Amoxicillin Syr', dose: '3x1 Cth', status: 'Antibiotik' }
+                ],
+                rxData: [
+                    { drug: 'Paracetamol Syr', qty: 'Fls No. I', signa: 'S 3 dd 1 Cth (prn)' },
+                    { drug: 'Amoxicillin Syr', qty: 'Fls No. I', signa: 'S 3 dd 1 Cth (Habiskan)' }
+                ],
+                missed: [],
+                chartData: [100, 100, 100, 0, 0, 0, 0],
+                interaction: 'Aman.'
+            }
+        };
+
+        // MOCK DATA FORUM
+        let forumData = [
+            {
+                id: 'F001',
+                author: 'Dr. Anonim',
+                role: 'Dokter Umum',
+                roleClass: 'bg-gray-100 text-gray-600',
+                tag: 'GERIATRI',
+                tagClass: 'bg-purple-100 text-purple-600',
+                title: 'Pilihan antihipertensi untuk pasien riwayat Asma?',
+                content: 'Pasien Tn. Budi (58th) riwayat asma bronkial sering kambuh. Saat ini mendapat Bisoprolol namun keluhan sesak meningkat. Mohon saran substitusi yang aman untuk jangka panjang.',
+                patientId: 'P002',
+                patientName: 'Tn. Budi',
+                likes: 12,
+                comments: [
+                    { author: 'dr. Sp.JP', role: 'Sp. Jantung', text: 'Sebaiknya hindari Beta-blocker non-selektif. Bisa pertimbangkan CCB seperti Amlodipine atau ARB.', time: '10m lalu' },
+                    { author: 'Apt. Sarah', role: 'Apoteker', text: 'Setuju dok. Bisoprolol (beta-1 selective) sebenarnya relatif aman tapi pada dosis tinggi bisa spillover ke reseptor beta-2 di paru.', time: '5m lalu' }
+                ]
+            },
+            {
+                id: 'F002',
+                author: 'Apt. Jaga',
+                role: 'Apoteker',
+                roleClass: 'bg-green-100 text-green-700',
+                tag: 'URGENT',
+                tagClass: 'bg-rose-100 text-rose-600',
+                title: 'Interaksi Warfarin dan Suplemen Herbal',
+                content: 'Pasien Ny. Sitta INR tidak stabil (naik turun drastis), ternyata konsumsi suplemen bawang putih rutin setiap pagi. Apakah perlu stop total atau penyesuaian dosis Warfarin?',
+                patientId: 'P003',
+                patientName: 'Ny. Sitta',
+                likes: 8,
+                comments: [
+                    { author: 'dr. Sp.PD', role: 'Internis', text: 'Stop suplemen segera. Risiko perdarahan tinggi. Cek INR ulang 3 hari lagi.', time: '1j lalu' }
+                ]
+            }
+        ];
+
+        let currentDetailPatient = null;
+        let detailChartInstance = null;
+        let currentForumId = null;
+        let previousScreen = 'screen-home-nakes'; 
+
         // NAVIGATION
         function goToScreen(id) {
+            const currentActive = document.querySelector('.screen.active');
+            if (currentActive && currentActive.id !== 'screen-splash' && currentActive.id !== 'screen-role') {
+                if (id === 'screen-nakes-patient-detail') {
+                    previousScreen = currentActive.id;
+                }
+            }
+
             document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+            
             const nav = document.getElementById('bottom-nav');
+            const navNakes = document.getElementById('bottom-nav-nakes');
+            
+            // Screens List
             const mainScreens = ['screen-home', 'screen-bugar', 'screen-riwayat', 'screen-pengingat', 'screen-lapor', 'screen-profil', 'screen-faq', 'screen-berita'];
-            if(mainScreens.includes(id)) { nav.classList.remove('hidden'); nav.classList.add('flex'); } 
-            else { nav.classList.add('hidden'); nav.classList.remove('flex'); }
+            const nakesScreens = ['screen-home-nakes', 'screen-nakes-forum', 'screen-nakes-list-pasien', 'screen-nakes-profil'];
+
+            // Logic Switch Nav
+            if(mainScreens.includes(id)) { 
+                nav.classList.remove('hidden'); nav.classList.add('flex'); 
+                navNakes.classList.add('hidden'); navNakes.classList.remove('flex');
+            } else if (nakesScreens.includes(id)) {
+                navNakes.classList.remove('hidden'); navNakes.classList.add('flex');
+                nav.classList.add('hidden'); nav.classList.remove('flex');
+                
+                // Init lists when screen opens
+                if(id === 'screen-home-nakes') { renderPatientList(); }
+                if(id === 'screen-nakes-forum') { renderForumList(); }
+                if(id === 'screen-nakes-list-pasien') { renderPatientSelectionList(); }
+            } else { 
+                nav.classList.add('hidden'); nav.classList.remove('flex'); 
+                navNakes.classList.add('hidden'); navNakes.classList.remove('flex');
+            }
         }
+        
+        // Initial Flow
         setTimeout(() => goToScreen('screen-splash'), 0);
-        setTimeout(() => goToScreen('screen-role'), 3500); // Wait for splash
+        setTimeout(() => goToScreen('screen-role'), 3500);
 
-        function showDevModal() { document.getElementById('modal-dev').classList.remove('hidden'); document.getElementById('modal-dev').classList.add('flex'); }
         function handleLogin(e) { e.preventDefault(); const name = document.getElementById('input-nama').value; document.getElementById('greeting-name').innerText = `Hai, ${name} 👋`; goToScreen('screen-home'); }
+        
+        function handleLoginNakes(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i> Memuat...';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                goToScreen('screen-home-nakes');
+            }, 1000);
+        }
 
-        // PENGINGAT
+        // RENDER PATIENT LISTS
+        function renderPatientList() {
+            const container = document.getElementById('nakes-patient-list');
+            container.innerHTML = '';
+            const list = Object.values(patientsData).slice(0, 3);
+            list.forEach(p => {
+                const html = `
+                <div onclick="openPatientDetail('${p.id}')" class="patient-card bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-3 cursor-pointer">
+                    <img src="${p.img}" class="w-12 h-12 rounded-full object-cover">
+                    <div class="flex-1">
+                        <h4 class="font-bold text-gray-900 text-sm">${p.name}</h4>
+                        <p class="text-[10px] text-gray-500">${p.id} • ${p.diagnosis}</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="block text-xs font-bold ${p.compliance >= 80 ? 'text-emerald-500' : 'text-rose-500'}">${p.compliance}%</span>
+                        <span class="text-[9px] text-gray-400">Kepatuhan</span>
+                    </div>
+                </div>`;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        function renderPatientSelectionList() {
+            const container = document.getElementById('full-patient-list');
+            container.innerHTML = '';
+            Object.values(patientsData).forEach(p => {
+                const html = `
+                <div onclick="openPatientDetail('${p.id}')" class="patient-item bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 cursor-pointer hover:border-nakes-500 transition-all mb-3">
+                    <img src="${p.img}" class="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm">
+                    <div class="flex-1">
+                        <h4 class="font-bold text-gray-900 text-sm patient-name">${p.name}</h4>
+                        <p class="text-[10px] text-gray-500 font-mono">${p.id}</p>
+                        <div class="flex gap-2 mt-1">
+                            <span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[9px] font-bold">${p.age}</span>
+                            <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded text-[9px] font-bold">${p.diagnosis}</span>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400">
+                        <i class="ph-bold ph-caret-right"></i>
+                    </div>
+                </div>`;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        function filterPatients() {
+            const input = document.getElementById('patient-search-input');
+            const filter = input.value.toUpperCase();
+            const list = document.getElementById("full-patient-list");
+            const items = list.getElementsByClassName("patient-item");
+
+            for (let i = 0; i < items.length; i++) {
+                const name = items[i].querySelector(".patient-name").textContent;
+                if (name.toUpperCase().indexOf(filter) > -1) {
+                    items[i].style.display = "";
+                } else {
+                    items[i].style.display = "none";
+                }
+            }
+        }
+
+        // OPEN PATIENT DETAIL LOGIC
+        function openPatientDetail(id) {
+            currentDetailPatient = patientsData[id];
+            const p = currentDetailPatient;
+
+            // Fill Info
+            document.getElementById('detail-img').src = p.img;
+            document.getElementById('detail-name').innerText = p.name;
+            document.getElementById('detail-desc').innerText = `${p.id} • ${p.diagnosis}`;
+            document.getElementById('detail-patient-id').innerText = `ID: ${p.id}`;
+            document.getElementById('detail-age').innerText = p.age;
+            document.getElementById('detail-body').innerText = p.body;
+            document.getElementById('detail-allergy').innerText = p.allergy;
+            
+            // Tab Ringkasan
+            document.getElementById('detail-diagnosis').innerText = p.diagnosis;
+            document.getElementById('detail-since').innerText = p.since;
+            
+            // Med List
+            const medContainer = document.getElementById('detail-med-list');
+            medContainer.innerHTML = '';
+            p.meds.forEach(m => {
+                medContainer.insertAdjacentHTML('beforeend', `
+                    <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-gray-100">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center"><i class="ph-fill ph-pill"></i></div>
+                            <div><p class="text-xs font-bold text-gray-800">${m.name}</p><p class="text-[10px] text-gray-500">${m.dose}</p></div>
+                        </div>
+                        <div class="flex flex-col items-end gap-1">
+                            <span class="text-[9px] font-bold bg-gray-100 text-gray-600 px-2 py-1 rounded">${m.status}</span>
+                            <button onclick="openSetReminder('${m.name}')" class="text-nakes-600 hover:text-nakes-800"><i class="ph-bold ph-bell"></i></button>
+                        </div>
+                    </div>
+                `);
+            });
+
+            // Populate Evaluation Drug List
+            renderMedicationsForEvaluation();
+
+            document.getElementById('interaction-box').classList.add('hidden');
+
+            // Tab Kepatuhan
+            document.getElementById('detail-compliance-badge').innerText = p.compliance + '%';
+            document.getElementById('detail-compliance-badge').className = `px-2 py-1 rounded text-[10px] font-bold ${p.compliance >= 80 ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`;
+            
+            const missedContainer = document.getElementById('detail-missed-doses');
+            missedContainer.innerHTML = '';
+            if(p.missed.length > 0) {
+                p.missed.forEach(m => {
+                    missedContainer.insertAdjacentHTML('beforeend', `
+                        <div class="bg-rose-50 p-3 rounded-xl border border-rose-100 flex items-start gap-3">
+                            <i class="ph-fill ph-warning-circle text-rose-500 mt-0.5"></i>
+                            <div>
+                                <h5 class="text-xs font-bold text-rose-800">Terlewat: ${m.drug}</h5>
+                                <p class="text-[10px] text-rose-600">${m.date} • ${m.note}</p>
+                            </div>
+                        </div>
+                    `);
+                });
+            } else {
+                missedContainer.innerHTML = '<div class="text-center text-xs text-gray-400 py-4">Tidak ada dosis terlewat. Bagus!</div>';
+            }
+
+            // Tab Efek Samping (New)
+            const seContainer = document.getElementById('detail-side-effects');
+            seContainer.innerHTML = '';
+            if(p.sideEffects && p.sideEffects.length > 0) {
+                p.sideEffects.forEach(se => {
+                    const isSerious = se.type === 'Serius';
+                    seContainer.insertAdjacentHTML('beforeend', `
+                        <div class="${isSerious ? 'bg-rose-50 border-rose-200' : 'bg-white border-gray-100'} p-4 rounded-2xl border shadow-sm flex gap-3">
+                            <div class="w-8 h-8 rounded-full ${isSerious ? 'bg-rose-200 text-rose-700' : 'bg-gray-100 text-gray-600'} flex items-center justify-center flex-shrink-0">
+                                <i class="ph-fill ${isSerious ? 'ph-warning' : 'ph-info'}"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-[10px] font-bold ${isSerious ? 'text-rose-700 bg-rose-100' : 'text-gray-600 bg-gray-100'} px-2 py-0.5 rounded">${se.type}</span>
+                                    <span class="text-[9px] text-gray-400">${se.date}</span>
+                                </div>
+                                <p class="text-xs ${isSerious ? 'text-rose-800' : 'text-gray-700'} font-bold">${se.desc}</p>
+                                <p class="text-[10px] ${se.solved ? 'text-emerald-600' : 'text-orange-500'} mt-1 font-bold">
+                                    ${se.solved ? '<i class="ph-bold ph-check"></i> Tertangani' : '<i class="ph-bold ph-clock"></i> Butuh Evaluasi'}
+                                </p>
+                            </div>
+                        </div>
+                    `);
+                });
+            } else {
+                seContainer.innerHTML = '<div class="text-center text-xs text-gray-400 py-8 border border-dashed border-gray-200 rounded-2xl">Tidak ada laporan efek samping.</div>';
+            }
+
+            initDetailChart(p.chartData);
+
+            const histContainer = document.getElementById('detail-history-list');
+            histContainer.innerHTML = '';
+            p.history.forEach(h => {
+                histContainer.insertAdjacentHTML('beforeend', `
+                    <div class="relative pl-4">
+                        <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-nakes-500 border-4 border-white shadow-sm"></div>
+                        <p class="text-[10px] font-bold text-gray-400 mb-1">${h.date}</p>
+                        <h5 class="text-sm font-bold text-gray-800">${h.title}</h5>
+                        <p class="text-xs text-gray-500 leading-relaxed">${h.desc}</p>
+                    </div>
+                `);
+            });
+
+            // Reset evaluation tab view
+            document.getElementById('eval-drug-list').classList.remove('hidden');
+            document.getElementById('eval-form').classList.add('hidden');
+
+            goToScreen('screen-nakes-patient-detail');
+        }
+
+        // --- EVALUATION LOGIC (UPDATED) ---
+        function renderMedicationsForEvaluation() {
+            if(!currentDetailPatient) return;
+            const container = document.getElementById('eval-drug-buttons');
+            container.innerHTML = '';
+            
+            currentDetailPatient.meds.forEach(m => {
+                container.insertAdjacentHTML('beforeend', `
+                    <button onclick="openDrugEvaluation('${m.name}')" class="w-full bg-white p-4 rounded-2xl flex items-center justify-between shadow-sm border border-gray-100 hover:border-nakes-500 transition-all group">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-100"><i class="ph-fill ph-pill"></i></div>
+                            <div class="text-left">
+                                <h5 class="text-xs font-bold text-gray-800">${m.name}</h5>
+                                <p class="text-[10px] text-gray-500">${m.dose}</p>
+                            </div>
+                        </div>
+                        <span class="text-[10px] text-nakes-600 font-bold group-hover:underline">Evaluasi <i class="ph-bold ph-caret-right"></i></span>
+                    </button>
+                `);
+            });
+        }
+
+        function openDrugEvaluation(drugName) {
+            document.getElementById('eval-selected-drug-name').innerText = drugName;
+            document.getElementById('eval-drug-list').classList.add('hidden');
+            document.getElementById('eval-form').classList.remove('hidden');
+            document.getElementById('eval-form').classList.add('animate-slide-up');
+        }
+
+        function backToEvalList() {
+            document.getElementById('eval-form').classList.add('hidden');
+            document.getElementById('eval-drug-list').classList.remove('hidden');
+        }
+
+        function saveDrugEvaluation() {
+            alert('Evaluasi untuk obat ini telah tersimpan.');
+            backToEvalList();
+        }
+
+        // --- ID CARD LOGIC ---
+        function openIDCard() {
+            document.getElementById('modal-nakes-id-card').classList.remove('hidden');
+            document.getElementById('modal-nakes-id-card').classList.add('flex');
+        }
+
+        function goBackFromDetail() {
+            if (previousScreen === 'screen-forum-detail') {
+                goToScreen('screen-forum-detail');
+            } else if (previousScreen === 'screen-nakes-list-pasien') {
+                goToScreen('screen-nakes-list-pasien');
+            } else {
+                goToScreen('screen-home-nakes');
+            }
+        }
+
+        function switchDetailTab(tabId, btn) {
+            document.querySelectorAll('.detail-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            document.querySelectorAll('.detail-tab-btn').forEach(b => {
+                b.classList.remove('bg-white', 'shadow', 'text-nakes-700');
+                b.classList.add('text-gray-500', 'hover:bg-gray-50');
+            });
+            btn.classList.add('bg-white', 'shadow', 'text-nakes-700');
+            btn.classList.remove('text-gray-500', 'hover:bg-gray-50');
+        }
+
+        function checkInteractionMock() {
+            if(!currentDetailPatient) return;
+            const box = document.getElementById('interaction-box');
+            const msg = document.getElementById('interaction-msg');
+            msg.innerText = "Menganalisis kombinasi obat...";
+            box.classList.remove('hidden');
+            setTimeout(() => { msg.innerText = currentDetailPatient.interaction; }, 800);
+        }
+
+        function showInterventionModal() {
+            document.getElementById('modal-intervention').classList.remove('hidden');
+            document.getElementById('modal-intervention').classList.add('flex');
+        }
+
+        function saveIntervention() {
+            document.getElementById('modal-intervention').classList.add('hidden');
+            document.getElementById('modal-intervention').classList.remove('flex');
+            alert('Intervensi berhasil dicatat di rekam medis elektronik!');
+        }
+
+        function initDetailChart(dataPoints) {
+            const ctx = document.getElementById('detailComplianceChart').getContext('2d');
+            if(detailChartInstance) { detailChartInstance.destroy(); }
+            detailChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['H-6', 'H-5', 'H-4', 'H-3', 'H-2', 'Kemarin', 'Hari Ini'],
+                    datasets: [{
+                        label: 'Kepatuhan',
+                        data: dataPoints,
+                        borderColor: '#0284c7',
+                        backgroundColor: 'rgba(2, 132, 199, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, max: 100, display: false },
+                        x: { grid: { display: false } }
+                    },
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        const guidelines = {
+            'hipertensi': { title: 'Tatalaksana Hipertensi', content: '<h4>1. Definisi & Klasifikasi</h4><p>Hipertensi didefinisikan sebagai tekanan darah sistolik ≥ 140 mmHg dan/atau diastolik ≥ 90 mmHg.</p><h4>2. Strategi Farmakologis</h4><ul><li><strong>Lini Pertama:</strong> ACE-i / ARB, CCB, atau Diuretik Thiazide.</li><li><strong>Kombinasi:</strong> Disarankan untuk pasien dengan BP > 20/10 mmHg di atas target.</li></ul><h4>3. Target Terapi</h4><p>Umum: < 140/90 mmHg.<br>Usia > 65 th: < 140/90 mmHg (jika ditoleransi).</p>' },
+            'tb': { title: 'Pedoman Nasional TB', content: '<h4>1. Prinsip Pengobatan</h4><p>Pengobatan TB harus diberikan dalam bentuk kombinasi beberapa jenis obat (OAT) untuk mencegah resistensi.</p><h4>2. Tahap Pengobatan</h4><ul><li><strong>Tahap Awal (Intensif):</strong> 2 bulan (2HRZE). Setiap hari.</li><li><strong>Tahap Lanjutan:</strong> 4 bulan (4HR).</li></ul><h4>3. Efek Samping Mayor</h4><p>Ikterus, Mual muntah hebat, Gangguan penglihatan, Syok.</p>' },
+            'diabetes': { title: 'Konsensus DM Tipe 2', content: '<h4>1. Pilar Penatalaksanaan</h4><p>Edukasi, Nutrisi Medis, Aktivitas Fisik, Farmakologi.</p><h4>2. Farmakologi</h4><ul><li><strong>Metformin:</strong> Lini pertama untuk pasien tanpa kontraindikasi ginjal.</li><li><strong>SGLT-2 Inhibitor / GLP-1 RA:</strong> Pilihan prioritas untuk pasien dengan risiko kardiovaskular tinggi.</li></ul>' }
+        };
+
+        function openGuideline(id) {
+            const g = guidelines[id];
+            document.getElementById('guideline-title').innerText = g.title;
+            document.getElementById('guideline-content').innerHTML = g.content;
+            document.getElementById('modal-guideline').classList.remove('hidden');
+            document.getElementById('modal-guideline').classList.add('flex');
+        }
+
+        function renderForumList() {
+            const container = document.getElementById('forum-list-container');
+            container.innerHTML = '';
+            forumData.forEach(f => {
+                const html = `
+                <div onclick="openForumDetail('${f.id}')" class="bg-white p-5 rounded-3xl shadow-sm border border-gray-200 hover:shadow-md transition-all cursor-pointer mb-4">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex gap-2">
+                            <span class="${f.roleClass} text-[10px] font-bold px-2 py-1 rounded">${f.role}</span>
+                            <span class="${f.tagClass} text-[10px] font-bold px-2 py-1 rounded">${f.tag}</span>
+                        </div>
+                        <i class="ph-bold ph-caret-right text-gray-300"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 text-sm mb-2">${f.title}</h3>
+                    <p class="text-xs text-gray-500 line-clamp-2 mb-4">${f.content}</p>
+                    <div class="flex items-center justify-between border-t border-gray-50 pt-3">
+                        <div class="flex -space-x-2">
+                             ${f.comments.slice(0,3).map((c, i) => `
+                                <div class="w-6 h-6 rounded-full bg-nakes-${(i+1)*100} border border-white flex items-center justify-center text-[10px] font-bold text-nakes-800 uppercase">${c.author.substring(0,2)}</div>
+                             `).join('')}
+                        </div>
+                        <div class="flex gap-3 text-xs text-gray-400">
+                            <span class="flex items-center gap-1"><i class="ph-bold ph-chat-circle"></i> ${f.comments.length}</span>
+                            <span class="flex items-center gap-1"><i class="ph-bold ph-thumbs-up"></i> ${f.likes}</span>
+                        </div>
+                    </div>
+                </div>`;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        function openForumDetail(id) {
+            currentForumId = id;
+            const post = forumData.find(f => f.id === id);
+            document.getElementById('forum-detail-content').innerHTML = `
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 font-bold text-sm border border-gray-200">${post.author.substring(0,2)}</div>
+                    <div><h4 class="font-bold text-sm text-gray-900">${post.author}</h4><p class="text-[10px] text-gray-500">${post.role} • 2j lalu</p></div>
+                </div>
+                <h2 class="text-lg font-bold text-gray-900 mb-3">${post.title}</h2>
+                <p class="text-sm text-gray-600 leading-relaxed mb-6 text-justify">${post.content}</p>
+                <div class="bg-green-50 border border-green-200 p-3 rounded-xl mb-4 flex items-start gap-3">
+                    <i class="ph-fill ph-check-circle text-green-600 text-lg mt-0.5"></i>
+                    <div><h5 class="text-xs font-bold text-green-800">Status Diskusi: Aktif</h5><p class="text-[10px] text-green-700">Keputusan terapi akan didokumentasikan di akhir thread.</p></div>
+                </div>
+                <button onclick="openPatientDetail('${post.patientId}')" class="w-full mb-4 py-3 bg-nakes-50 border border-nakes-200 text-nakes-700 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 hover:bg-nakes-100 transition-colors">
+                    <i class="ph-bold ph-file-text text-lg"></i> <span>Lihat Rekam Medis: ${post.patientName}</span>
+                </button>
+            `;
+            renderComments(post);
+            goToScreen('screen-forum-detail');
+        }
+
+        function renderComments(post) {
+            const list = document.getElementById('forum-comments-list');
+            list.innerHTML = '';
+            post.comments.forEach(c => {
+                const isMe = c.author === 'Apt. Tirto, S.Farm';
+                const html = `
+                <div class="flex gap-3 ${isMe ? 'flex-row-reverse' : ''}">
+                    <div class="w-8 h-8 rounded-full ${isMe ? 'bg-nakes-600 text-white' : 'bg-gray-100 text-gray-600'} flex items-center justify-center text-[10px] font-bold flex-shrink-0 border border-transparent">
+                        ${isMe ? '<i class="ph-fill ph-user"></i>' : c.author.substring(0,2)}
+                    </div>
+                    <div class="${isMe ? 'bg-nakes-50 border-nakes-100' : 'bg-gray-50 border-gray-100'} p-3 rounded-2xl border flex-1">
+                        <div class="flex justify-between items-start mb-1">
+                            <span class="text-[10px] font-bold ${isMe ? 'text-nakes-700' : 'text-gray-900'}">${c.author} <span class="font-normal text-gray-400">(${c.role})</span></span>
+                            <span class="text-[9px] text-gray-400">${c.time}</span>
+                        </div>
+                        <p class="text-xs ${isMe ? 'text-nakes-800' : 'text-gray-600'} leading-relaxed">${c.text}</p>
+                    </div>
+                </div>`;
+                list.insertAdjacentHTML('beforeend', html);
+            });
+            const container = document.querySelector('#screen-forum-detail .scroll-content');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function postComment() {
+            const input = document.getElementById('comment-input');
+            const text = input.value.trim();
+            if (text && currentForumId) {
+                const post = forumData.find(f => f.id === currentForumId);
+                post.comments.push({ author: 'Apt. Tirto, S.Farm', role: 'Apoteker', text: text, time: 'Baru saja' });
+                input.value = '';
+                renderComments(post);
+            }
+        }
+
+        function openSetReminder(drugName) {
+            document.getElementById('reminder-drug-name').innerText = drugName;
+            document.getElementById('modal-set-reminder').classList.remove('hidden');
+            document.getElementById('modal-set-reminder').classList.add('flex');
+        }
+
+        function saveReminder() {
+            document.getElementById('modal-set-reminder').classList.add('hidden');
+            document.getElementById('modal-set-reminder').classList.remove('flex');
+            alert('Pengingat telah dikirim ke aplikasi pasien!');
+        }
+
+        function viewOriginalRx() {
+            if(!currentDetailPatient || !currentDetailPatient.rxData) { alert('Data resep asli tidak ditemukan.'); return; }
+            const rxContainer = document.getElementById('rx-content');
+            rxContainer.innerHTML = '';
+            currentDetailPatient.rxData.forEach(item => {
+                rxContainer.insertAdjacentHTML('beforeend', `
+                    <div class="mb-4">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="font-bold text-lg font-serif italic">R/</span>
+                            <span class="font-bold text-base">${item.drug}</span>
+                            <span class="text-sm ml-auto">${item.qty}</span>
+                        </div>
+                        <div class="pl-8 text-sm italic text-gray-600">${item.signa}</div>
+                        <div class="pl-8 text-[10px] text-gray-400 mt-1 border-t border-gray-100 w-1/2">Parf ______</div>
+                    </div>
+                `);
+            });
+            document.getElementById('rx-patient-name').innerText = currentDetailPatient.name;
+            document.getElementById('rx-patient-age').innerText = currentDetailPatient.age;
+            document.getElementById('modal-view-rx').classList.remove('hidden');
+            document.getElementById('modal-view-rx').classList.add('flex');
+        }
+
         function renderMedications() {
             const container = document.getElementById('list-obat-container');
             container.innerHTML = '<div class="timeline-line"></div>';
@@ -438,27 +1592,11 @@
             document.getElementById('compliance-msg').innerText = percent === 100 ? "Luar Biasa!" : "Minum obatmu tepat waktu!";
         }
 
-        // BERITA (RICH CONTENT UPDATE - SUPER DETAIL)
         function openArticle(id) {
             const data = {
-                'dbd': {
-                    title: 'Waspada Lonjakan Kasus DBD di Musim Hujan: Ini Gejalanya', 
-                    img: 'https://images.unsplash.com/photo-1551884170-09fb70a3a2ed?w=800', 
-                    cat: 'Wabah',
-                    body: '<p><strong>Kasus Demam Berdarah Dengue (DBD)</strong> di Indonesia sedang mengalami tren kenaikan yang signifikan seiring dengan datangnya puncak musim hujan. Genangan air bersih di sekitar rumah menjadi tempat favorit berkembang biak bagi nyamuk <i>Aedes aegypti</i>.</p><br><h4 class="font-bold text-gray-900 text-lg mb-2">Gejala Khas DBD yang Wajib Diwaspadai:</h4><ul class="list-disc pl-5 space-y-2 text-gray-700"><li><strong>Demam Tinggi Mendadak:</strong> Suhu tubuh bisa mencapai 40°C dan berlangsung selama 2-7 hari.</li><li><strong>Nyeri Kepala Hebat:</strong> Terutama dirasakan di area belakang mata (retro-orbital).</li><li><strong>Nyeri Otot dan Sendi:</strong> Sering disebut sebagai "demam patah tulang" karena rasa sakit yang intens.</li><li><strong>Ruam Kulit:</strong> Muncul bintik-bintik merah (petechiae) yang tidak hilang saat ditekan.</li><li><strong>Mual dan Muntah:</strong> Disertai penurunan nafsu makan yang drastis.</li></ul><br><h4 class="font-bold text-gray-900 text-lg mb-2">Langkah Pencegahan 3M Plus:</h4><ol class="list-decimal pl-5 space-y-2 text-gray-700"><li><strong>Menguras</strong> bak mandi dan tempat penampungan air minimal seminggu sekali.</li><li><strong>Menutup</strong> rapat tempat-tempat penampungan air.</li><li><strong>Mendaur Ulang</strong> barang bekas yang berpotensi menampung air hujan.</li><li><strong>Plus:</strong> Menggunakan lotion anti nyamuk, memasang kawat nyamuk, dan memelihara ikan pemakan jentik.</li></ol><br><div class="bg-red-50 p-4 rounded-xl border border-red-100 text-sm text-red-700 italic">Segera bawa ke fasilitas kesehatan terdekat jika demam tidak turun dalam 3 hari atau muncul tanda bahaya seperti mimisan, gusi berdarah, atau muntah terus menerus.</div>'
-                },
-                'gula': {
-                    title: '5 Tanda Tubuh Kelebihan Gula yang Sering Diabaikan', 
-                    img: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800', 
-                    cat: 'Gaya Hidup',
-                    body: '<p>Konsumsi gula berlebih tidak hanya menyebabkan kenaikan berat badan, tetapi juga dapat memicu resistensi insulin yang berujung pada diabetes tipe 2. Batas aman konsumsi gula harian menurut Kementerian Kesehatan adalah 50 gram (setara 4 sendok makan).</p><br><h4 class="font-bold text-gray-900 text-lg mb-2">Tanda Tubuh Anda "Keracunan" Gula:</h4><ul class="list-disc pl-5 space-y-2 text-gray-700"><li><strong>Kelelahan Kronis (Fatigue):</strong> Merasa lemas dan mengantuk justru setelah makan besar. Ini akibat lonjakan gula darah yang diikuti penurunan drastis (crash).</li><li><strong>Selalu Merasa Haus (Polidipsi) dan Sering Buang Air Kecil (Poliuria):</strong> Ginjal bekerja keras membuang kelebihan gula melalui urin, menarik cairan tubuh bersamanya.</li><li><strong>Masalah Kulit:</strong> Gula memicu peradangan, menyebabkan jerawat, kulit kusam, dan penuaan dini (glikasi).</li><li><strong>Berat Badan Naik:</strong> Terutama penumpukan lemak di area perut (lemak viseral) yang berbahaya bagi organ dalam.</li><li><strong>Mood Swing:</strong> Perubahan suasana hati yang cepat, mudah tersinggung, atau cemas.</li></ul><br><div class="bg-orange-50 p-4 rounded-xl border border-orange-100 text-sm text-orange-700">Mulailah kurangi minuman manis kemasan, perbanyak air putih, dan perhatikan label nutrisi pada makanan kemasan.</div>'
-                },
-                'tidur': {
-                    title: 'Susah Tidur? Coba Teknik Pernapasan 4-7-8', 
-                    img: 'https://images.unsplash.com/photo-1541781777621-dd13c914ba76?w=800', 
-                    cat: 'Tips Sehat',
-                    body: '<p>Insomnia atau kesulitan tidur bisa sangat mengganggu produktivitas dan kesehatan mental. Salah satu metode alami yang direkomendasikan para ahli adalah <strong>Teknik Pernapasan 4-7-8</strong> yang dikembangkan oleh Dr. Andrew Weil. Teknik ini berfungsi sebagai "obat penenang alami" untuk sistem saraf.</p><br><h4 class="font-bold text-gray-900 text-lg mb-2">Cara Melakukan Teknik 4-7-8:</h4><ol class="list-decimal pl-5 space-y-2 text-gray-700"><li>Duduk atau berbaring dengan nyaman. Tempelkan ujung lidah ke langit-langit mulut, tepat di belakang gigi depan atas.</li><li>Buang napas sepenuhnya melalui mulut dengan suara mendesing ("wusss").</li><li><strong>Tarik napas</strong> perlahan melalui hidung dalam hitungan <strong>4 detik</strong>.</li><li><strong>Tahan napas</strong> selama <strong>7 detik</strong>.</li><li><strong>Hembuskan napas</strong> kuat melalui mulut selama <strong>8 detik</strong> dengan suara mendesing.</li><li>Ulangi siklus ini sebanyak 4 kali.</li></ol><br><p>Lakukan teknik ini dua kali sehari atau saat Anda merasa cemas dan sulit tidur. Konsistensi adalah kunci untuk melatih tubuh agar lebih cepat rileks.</p>'
-                }
+                'dbd': { title: 'Waspada Lonjakan Kasus DBD di Musim Hujan: Ini Gejalanya', img: 'https://images.unsplash.com/photo-1551884170-09fb70a3a2ed?w=800', cat: 'Wabah', body: '<p><strong>Kasus Demam Berdarah Dengue (DBD)</strong> di Indonesia sedang mengalami tren kenaikan yang signifikan seiring dengan datangnya puncak musim hujan. Genangan air bersih di sekitar rumah menjadi tempat favorit berkembang biak bagi nyamuk <i>Aedes aegypti</i>.</p><br><h4 class="font-bold text-gray-900 text-lg mb-2">Gejala Khas DBD yang Wajib Diwaspadai:</h4><ul class="list-disc pl-5 space-y-2 text-gray-700"><li><strong>Demam Tinggi Mendadak:</strong> Suhu tubuh bisa mencapai 40°C dan berlangsung selama 2-7 hari.</li><li><strong>Nyeri Kepala Hebat:</strong> Terutama dirasakan di area belakang mata (retro-orbital).</li><li><strong>Nyeri Otot dan Sendi:</strong> Sering disebut sebagai "demam patah tulang" karena rasa sakit yang intens.</li><li><strong>Ruam Kulit:</strong> Muncul bintik-bintik merah (petechiae) yang tidak hilang saat ditekan.</li><li><strong>Mual dan Muntah:</strong> Disertai penurunan nafsu makan yang drastis.</li></ul><br><h4 class="font-bold text-gray-900 text-lg mb-2">Langkah Pencegahan 3M Plus:</h4><ol class="list-decimal pl-5 space-y-2 text-gray-700"><li><strong>Menguras</strong> bak mandi dan tempat penampungan air minimal seminggu sekali.</li><li><strong>Menutup</strong> rapat tempat-tempat penampungan air.</li><li><strong>Mendaur Ulang</strong> barang bekas yang berpotensi menampung air hujan.</li><li><strong>Plus:</strong> Menggunakan lotion anti nyamuk, memasang kawat nyamuk, dan memelihara ikan pemakan jentik.</li></ol><br><div class="bg-red-50 p-4 rounded-xl border border-red-100 text-sm text-red-700 italic">Segera bawa ke fasilitas kesehatan terdekat jika demam tidak turun dalam 3 hari atau muncul tanda bahaya seperti mimisan, gusi berdarah, atau muntah terus menerus.</div>' },
+                'gula': { title: '5 Tanda Tubuh Kelebihan Gula yang Sering Diabaikan', img: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800', cat: 'Gaya Hidup', body: '<p>Konsumsi gula berlebih tidak hanya menyebabkan kenaikan berat badan, tetapi juga dapat memicu resistensi insulin yang berujung pada diabetes tipe 2. Batas aman konsumsi gula harian menurut Kementerian Kesehatan adalah 50 gram (setara 4 sendok makan).</p><br><h4 class="font-bold text-gray-900 text-lg mb-2">Tanda Tubuh Anda "Keracunan" Gula:</h4><ul class="list-disc pl-5 space-y-2 text-gray-700"><li><strong>Kelelahan Kronis (Fatigue):</strong> Merasa lemas dan mengantuk justru setelah makan besar. Ini akibat lonjakan gula darah yang diikuti penurunan drastis (crash).</li><li><strong>Selalu Merasa Haus (Polidipsi) dan Sering Buang Air Kecil (Poliuria):</strong> Ginjal bekerja keras membuang kelebihan gula melalui urin, menarik cairan tubuh bersamanya.</li><li><strong>Masalah Kulit:</strong> Gula memicu peradangan, menyebabkan jerawat, kulit kusam, dan penuaan dini (glikasi).</li><li><strong>Berat Badan Naik:</strong> Terutama penumpukan lemak di area perut (lemak viseral) yang berbahaya bagi organ dalam.</li><li><strong>Mood Swing:</strong> Perubahan suasana hati yang cepat, mudah tersinggung, atau cemas.</li></ul><br><div class="bg-orange-50 p-4 rounded-xl border border-orange-100 text-sm text-orange-700">Mulailah kurangi minuman manis kemasan, perbanyak air putih, dan perhatikan label nutrisi pada makanan kemasan.</div>' },
+                'tidur': { title: 'Susah Tidur? Coba Teknik Pernapasan 4-7-8', img: 'https://images.unsplash.com/photo-1541781777621-dd13c914ba76?w=800', cat: 'Tips Sehat', body: '<p>Insomnia atau kesulitan tidur bisa sangat mengganggu produktivitas dan kesehatan mental. Salah satu metode alami yang direkomendasikan para ahli adalah <strong>Teknik Pernapasan 4-7-8</strong> yang dikembangkan oleh Dr. Andrew Weil. Teknik ini berfungsi sebagai "obat penenang alami" untuk sistem saraf.</p><br><h4 class="font-bold text-gray-900 text-lg mb-2">Cara Melakukan Teknik 4-7-8:</h4><ol class="list-decimal pl-5 space-y-2 text-gray-700"><li>Duduk atau berbaring dengan nyaman. Tempelkan ujung lidah ke langit-langit mulut, tepat di belakang gigi depan atas.</li><li>Buang napas sepenuhnya melalui mulut dengan suara mendesing ("wusss").</li><li><strong>Tarik napas</strong> perlahan melalui hidung dalam hitungan <strong>4 detik</strong>.</li><li><strong>Tahan napas</strong> selama <strong>7 detik</strong>.</li><li><strong>Hembuskan napas</strong> kuat melalui mulut selama <strong>8 detik</strong> dengan suara mendesing.</li><li>Ulangi siklus ini sebanyak 4 kali.</li></ol><br><p>Lakukan teknik ini dua kali sehari atau saat Anda merasa cemas dan sulit tidur. Konsistensi adalah kunci untuk melatih tubuh agar lebih cepat rileks.</p>' }
             };
             const art = data[id];
             document.getElementById('art-title').innerText = art.title;
@@ -469,7 +1607,6 @@
             document.getElementById('modal-article').classList.add('flex');
         }
 
-        // DAFTAR RS LOGIC
         function selectRS(name) { state.booking.rs = name; goToScreen('screen-daftar-method'); }
         function goToBookingForm(type) { goToScreen('screen-daftar-form'); }
         function selectPoli(el, poly, doc) { document.querySelectorAll('.poli-item').forEach(p => p.classList.remove('selected')); el.classList.add('selected'); state.booking.doc = doc; }
@@ -479,7 +1616,6 @@
             goToScreen('screen-tiket');
         }
 
-        // UTILS
         function selectPayment(el) { document.querySelectorAll('.pay-opt').forEach(p => p.classList.remove('selected', 'border-primary-500', 'bg-primary-50')); el.classList.add('selected', 'border-primary-500', 'bg-primary-50'); }
         function processPayment() { document.getElementById('modal-payment-success').classList.remove('hidden'); document.getElementById('modal-payment-success').classList.add('flex'); }
         function openResep() { document.getElementById('modal-resep').classList.remove('hidden'); document.getElementById('modal-resep').classList.add('flex'); }
